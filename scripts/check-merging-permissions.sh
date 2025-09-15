@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Check if origin branch is given
 if [[ -z $1 ]]; then
     echo "You must provide the origin branch that you want to merge."
