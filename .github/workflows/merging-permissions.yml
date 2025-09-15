@@ -14,10 +14,13 @@ on:
 jobs:
     check-permissions:
         name: Check merge permissions
-        runs-on: ubuntu-latest
-        # runs-on: self-hosted
+        runs-on: self-hosted
         steps:
-            - working-directory: scripts
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Execute script
+              working-directory: scripts
               run: |
                 SOURCE_BRANCH="${{ github.head_ref }}"
                 DEST_BRANCH="${{ github.base_ref }}"
