@@ -1,0 +1,23 @@
+##
+## EPITECH PROJECT, 2025
+## R-Type
+## File description:
+## merging-permissions.yml
+##
+
+name: Merging permissions
+
+on:
+    pull_request:
+        types: [opened, synchronize, reopened]
+
+jobs:
+    check-permissions:
+        name: Check merge permissions
+        runs-on: self-hosted
+        steps:
+            - run: |
+                SOURCE_BRANCH="${{ github.head_ref }}"
+                DEST_BRANCH="${{ github.base_ref }}"
+
+                sh ./scripts/check-merging-permissions.sh $SOURCE_BRANCH $DEST_BRANCH
