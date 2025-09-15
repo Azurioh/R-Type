@@ -8,20 +8,17 @@
 name: Merging permissions
 
 on:
-    pull_request:
-        types: [opened, synchronize, reopened]
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
     check-permissions:
-        name: Check merge permissions
-        runs-on: self-hosted
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
+      name: Check merge permissions
+      runs-on: self-hosted
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
 
-            - name: Execute script
-              working-directory: scripts
-              run: |
-                SOURCE_BRANCH="${{ github.head_ref }}"
-                DEST_BRANCH="${{ github.base_ref }}"
-                bash check-merging-permissions.sh $SOURCE_BRANCH $DEST_BRANCH
+        - name: Execute script
+          working-directory: scripts
+          run: bash check-merging-permissions.sh ${{ github.head_ref }} ${{ github.base_ref }}
