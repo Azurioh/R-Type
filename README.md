@@ -2,6 +2,18 @@
 
 The goal of this project is to recreate network version of the classic arcade game R-Type using C++.
 
+# Build
+
+To build the project, you can use the provided `build.sh` script located in the `scripts` directory. The script takes two arguments: the action (`build` or `clean`) and the target directory (either `client` or `server`).
+
+## Documentation
+
+We use Doxygen to generate the documentation. To generate the documentation, you can go to the `client` or `server` directory and run the following command:
+
+```bash
+doxygen Doxyfile
+```
+
 ## Contributing
 
 For contributions guidelines, please refer to [this document](docs/contributing.md).
