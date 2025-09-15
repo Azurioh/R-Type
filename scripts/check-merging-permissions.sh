@@ -13,14 +13,14 @@ if [[ -z $2 ]]; then
 fi
 
 # Staging branch protections
-if [[ $2 == "staging" ]] -a [[ $1 != "main" ]]; then
+if [[ $2 == "staging" && $1 != "main" ]]; then
     echo "You can't merge your branch to the staging branch."
     echo "Only PR from main branch are allowed."
     exit 1
 fi
 
 # Production branch protections
-if [[ $2 == "production" ]] -a [[ $1 != "staging "]]; then
+if [[ $2 == "production" && $1 != "staging" ]]; then
     echo "You can't merge your branch to the production branch."
     echo "Only PR from staging branch are allowed."
     exit 1
