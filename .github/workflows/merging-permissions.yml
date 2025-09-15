@@ -14,10 +14,11 @@ on:
 jobs:
     check-permissions:
         name: Check merge permissions
-        runs-on: self-hosted
+        runs-on: ubuntu-latest
+        # runs-on: self-hosted
         steps:
-            - run: |
+            - working-directory: scripts
+              run: |
                 SOURCE_BRANCH="${{ github.head_ref }}"
                 DEST_BRANCH="${{ github.base_ref }}"
-
-                sh ./scripts/check-merging-permissions.sh $SOURCE_BRANCH $DEST_BRANCH
+                sh check-merging-permissions.sh $SOURCE_BRANCH $DEST_BRANCH
