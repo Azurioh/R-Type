@@ -37,9 +37,10 @@ Table of Contents
    commands and responses for managing rooms and player movements within
    a game environment using a binary protocol.
 
-3.  R-TYPE Commands
+3.  R-Type Commands
 
    The following are the R-Type commands:
+      - /!\ TO BE DEFINED
 
 3.1.  Command Structure
 
@@ -67,10 +68,13 @@ Table of Contents
    The following are the mandatory status codes included in the responses:
 
    - Preliminary reply
+      - /!\ TO BE DEFINED
 
    - Positive reply
+      - /!\ TO BE DEFINED
 
    - Negative reply
+      - /!\ TO BE DEFINED
 
 3.3.  Command Responses
 
@@ -86,16 +90,21 @@ Table of Contents
 
    The following are the data structures of the R-Type command
    responses:
+      - /!\ TO BE DEFINED
 
 3.3.2.  Success Responses
+   - /!\ TO BE DEFINED
 
 3.3.3.  Error Responses
+   - /!\ TO BE DEFINED
 
 
 4.  R-Type Events
 
    The following are the R-Type events (messages sent from the server
    to the client):
+
+      - /!\ TO BE DEFINED
 
    Event Structure
 
@@ -116,6 +125,8 @@ Table of Contents
    +-------------+------------+
 
 4.1.  R-Type Events Example
+
+   - /!\ TO BE DEFINED
 
 5.  References
 
