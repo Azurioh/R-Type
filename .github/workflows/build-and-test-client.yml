@@ -1,0 +1,39 @@
+##
+## EPITECH PROJECT, 2025
+## R-Type
+## File description:
+## build-and-test-client.yml
+##
+
+name: Build and Test Client
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/build-and-test-client.yml
+      - client/**
+
+env:
+  BINARY: rtype_client
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build
+        timeout-minutes: 5
+        run: ./scripts/build.sh build client
+
+      - name: Check executable
+        working-directory: client
+        run: if [ ! -x "${{ env.BINARY }}" ]; then exit 1; fi
+
+      - name: Clean
+        run: ./scripts/build.sh clean client
