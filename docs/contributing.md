@@ -58,7 +58,7 @@ git checkout -b <jira-task-name> # e.g. git checkout -b jira-1-initalize-reposit
 
 2. **Commit your changes**
 
-You must follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification for your commit messages.
+You must follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification for your commit messages. Please make sure your commits are [atomic](https://gitbybit.com/gitopedia/best-practices/atomic-commits) and focused on a single change.
 
 Each commit message consists of a short header, optional body and footer. The header has a special format that includes a type, an optional scope, and a subject. The header use the imperative, don't capitalize the first letter, as well as not dotting the end of the sentence. The footer must contain the Jira task linked to the branch you are working on.
 
