@@ -58,7 +58,7 @@ git checkout -b <jira-task-name> # e.g. git checkout -b jira-1-initalize-reposit
 
 2. **Commit your changes**
 
-You must follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification for your commit messages.
+You must follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification for your commit messages. Please make sure your commits are [atomic](https://gitbybit.com/gitopedia/best-practices/atomic-commits) and focused on a single change.
 
 Each commit message consists of a short header, optional body and footer. The header has a special format that includes a type, an optional scope, and a subject. The header use the imperative, don't capitalize the first letter, as well as not dotting the end of the sentence. The footer must contain the Jira task linked to the branch you are working on.
 
@@ -109,10 +109,10 @@ The pull request must be reviewed by at least two other person before it can be 
 
 4. **Merging your changes**
 
-Once the pull request is approved, you can merge your changes into the main branch. The commit message must contain the Jira task number. Here is an example of a commit message:
+Once the pull request is approved, you can squash your changes into the main branch. The commit message must contain the Jira task identifier and the pull request identifier. Here is an example of a commit message:
 
 ```
-[JIRA-1234] Merge pull request #123
+[JIRA-1234] Add new feature to the project #123
 ```
 
 You also can report the description of the pull request in the commit message description.
@@ -121,8 +121,7 @@ You also can report the description of the pull request in the commit message de
 
 The project is divided into several parts written in C++. Each part has its own directory and is responsible for a specific task.
 
-- **Frontend**: This part is responsible for the user interface and the user experience.
-- **Backend**: This part is responsible for the game logic and the game state.
-- **Common**: This part holds the common code used by both the frontend and the backend.
+- **Client**: This part is responsible for the user interface and the user experience.
+- **Server**: This part is responsible for the game logic and the game state.
 
 The structure is duplicated in the `include` and `src` directories. The `include` directory contains the header files, while the `src` directory contains the source files.

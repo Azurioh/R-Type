@@ -1,0 +1,171 @@
+R-Type Protocol Specification
+
+Abstract
+
+   This document specifies the R-Type protocol, which defines the
+   commands and responses for managing rooms and player movements within
+   a game environment using a binary protocol.
+
+Status of This Memo
+
+   This document is an informational specification for the R-Type protocol. It
+   provides guidelines and definitions for managing rooms and player movements
+   within a game environment. This memo does not represent an Internet Standard
+   of any kind. Distribution of this memo is unlimited.
+
+Table of Contents
+
+   1.  Introduction
+   2.  How communication works
+   3.  R-Type Commands
+      3.1.  Command Structure
+      3.2.  Status Codes
+      3.3.  Command Responses
+         3.3.1.  Data Structure
+         3.3.2.  Success Responses
+         3.3.3.  Error Responses
+   4.  R-Type Events
+   5.  References
+      5.1.  Normative References
+      5.2.  Informative References
+   Acknowledgements
+   Authors' Addresses
+
+1.  Introduction
+
+   This document specifies the R-Type protocol, which defines the
+   commands and responses for managing rooms and player movements within
+   a game environment using a binary protocol.
+
+3.  R-Type Commands
+
+   The following are the R-Type commands:
+      - /!\ TO BE DEFINED
+
+3.1.  Command Structure
+
+   Each command is represented as a binary message with the following
+   structure:
+
+   1. Command Type: A 1-byte integer representing the command type.
+   2. Data Length: A 4-byte integer representing the length of the data
+      payload.
+   3. Data Payload: The data specific to the command (if any).
+
+   Command Types
+
+   +---------+------------+
+   | Command | Type Value |
+   +---------+------------+
+   |         |            |
+   +---------+------------+
+
+3.1.1.   Command example
+
+
+3.2.  Status Codes
+
+   The following are the mandatory status codes included in the responses:
+
+   - Preliminary reply
+      - /!\ TO BE DEFINED
+
+   - Positive reply
+      - /!\ TO BE DEFINED
+
+   - Negative reply
+      - /!\ TO BE DEFINED
+
+3.3.  Command Responses
+
+   The following table outlines the expected responses for each command:
+
+   +---------+---------------------+
+   | Command | Possible Responses  |
+   +---------+---------------------+
+   |         |                     |
+   +---------+---------------------+
+
+3.3.1.  Data Structure
+
+   The following are the data structures of the R-Type command
+   responses:
+      - /!\ TO BE DEFINED
+
+3.3.2.  Success Responses
+   - /!\ TO BE DEFINED
+
+3.3.3.  Error Responses
+   - /!\ TO BE DEFINED
+
+
+4.  R-Type Events
+
+   The following are the R-Type events (messages sent from the server
+   to the client):
+
+      - /!\ TO BE DEFINED
+
+   Event Structure
+
+   Each event is represented as a binary message with the following
+   structure:
+
+   1. Event Type: A 1-byte integer representing the event type.
+   2. Data Length: A 2-byte integer representing the length of the data
+      payload.
+   3. Data Payload: The data specific to the event (if any).
+
+   Event Types
+
+   +-------------+------------+
+   | Event       | Type Value |
+   +-------------+------------+
+   |             |            |
+   +-------------+------------+
+
+4.1.  R-Type Events Example
+
+   - /!\ TO BE DEFINED
+
+5.  References
+
+5.1.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
+
+5.2.  Informative References
+
+   [RFC959]   Postel, J. and J. Reynolds, "File Transfer Protocol
+              (FTP)", STD 9, RFC 959, DOI 10.17487/RFC0959, October
+              1985, <https://www.rfc-editor.org/info/rfc959>.
+
+   [RFC7322]  Flanagan, H., "RFC Style Guide", RFC 7322,
+              DOI 10.17487/RFC7322, August 104,
+              <https://www.rfc-editor.org/info/rfc7322>.
+
+Acknowledgements
+
+   The authors wish to thank contributors for their reviews and
+   suggestions.
+
+Authors' Addresses
+
+   Alan CUNIN
+   Epitech
+   Email: alan.cunin@epitech.eu
+
+   Mael BERTOCCHI
+   Epitech
+   Email: mael.bertocchi@epitech.eu
+
+   Aymeric BRETIN
+   Epitech
+   Email: aymeric.bretin@epitech.eu
+
+   Florian PERIDY
+   Epitech
+   Email: florian.peridy@epitech.eu
