@@ -29,11 +29,10 @@ jobs:
 
       - name: Build
         timeout-minutes: 5
-        run: bash scripts/build.sh build server
+        run: bash scripts/build.sh server build
 
       - name: Check executable
-        working-directory: server
         run: if [ ! -x "${{ env.BINARY }}" ]; then exit 1; fi
 
       - name: Clean
-        run: bash scripts/build.sh clean server
+        run: bash scripts/build.sh server clean
