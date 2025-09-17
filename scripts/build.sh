@@ -1,57 +1,67 @@
 #!/bin/bash
 
 # Exit at first error
-set -e
+set -euo pipefail
+
+# Function to display usage information
+usage() {
+    echo "Usage: $0 {server|client} {build|clean}"
+    exit 1
+}
 
 # Check command line arguments
 if [ "$#" -ne 2 ]; then
-    exit 1
+    usage
 fi
 
 # Define action and target directory variables
-ACTION="$1"
-TARGET_DIR="$2"
+TARGET="$1"
+ACTION="$2"
 
-# Function to clean build artifacts
+# Define paths variables based on the script location
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+TARGET_DIR="$PROJECT_ROOT/$TARGET"
+BUILD_DIR="$TARGET_DIR/build"
+
+# Check if target directory exists
+if [ ! -d "$TARGET_DIR" ]; then
+    echo "Target '$TARGET' does not exist at $TARGET_DIR"
+    exit 1
+fi
+
+# Define clean and build functions
 clean() {
-    local target_dir="$1"
+    echo "Removing build directory for $TARGET"
+    rm -rf "$BUILD_DIR"
 
-    rm -rf "$target_dir/build"
-
-    rm -f "$target_dir/r-type_client"
-    rm -f "$target_dir/r-type_server"
+    echo "Removing binary from project root"
+    rm -f "$PROJECT_ROOT/r-type_$TARGET"
 }
 
-# Function to build the project
+# Build function
 build() {
-    local target_dir="$1"
-    local build_dir="$target_dir/build"
+    echo "Configuring $TARGET in $BUILD_DIR"
+    cmake -S "$TARGET_DIR" -B "$BUILD_DIR" -DCMAKE_BUILD_TYPE=Release
 
-    rm -rf "$build_dir" && mkdir -p "$build_dir"
+    echo "Compiling $TARGET"
+    cmake --build "$BUILD_DIR" -j"$(nproc)"
 
-    cd "$build_dir"
-
-    cmake ".." -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
-    cmake --build "."
-
-    if [ -f "r-type_client" ]; then
-        cp "r-type_client" ".."
-    elif [ -f "r-type_server" ]; then
-        cp "r-type_server" ".."
+    local exe="$BUILD_DIR/r-type_$TARGET"
+    if [ -f "$exe" ]; then
+        cp "$exe" "$PROJECT_ROOT/"
+        echo "Copied $exe to $PROJECT_ROOT/"
     else
+        echo "Binary $exe not found after build"
         exit 1
     fi
-
-    cd - > /dev/null
 }
 
 # Execute action
 if [ "$ACTION" = "clean" ]; then
-    clean "$TARGET_DIR"
-    exit 0
+    clean "$TARGET"
 elif [ "$ACTION" = "build" ]; then
-    build "$TARGET_DIR"
-    exit 0
+    build "$TARGET"
 else
-    exit 1
+    usage
 fi
