@@ -16,7 +16,7 @@ on:
       - client/**
 
 env:
-  BINARY: rtype_client
+  BINARY: r-type_client
 
 jobs:
   build:
@@ -29,11 +29,10 @@ jobs:
 
       - name: Build
         timeout-minutes: 5
-        run: bash scripts/build.sh build client
+        run: bash scripts/build.sh client build
 
       - name: Check executable
-        working-directory: client
         run: if [ ! -x "${{ env.BINARY }}" ]; then exit 1; fi
 
       - name: Clean
-        run: bash scripts/build.sh clean client
+        run: bash scripts/build.sh client clean
