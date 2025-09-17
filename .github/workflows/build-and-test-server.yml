@@ -16,7 +16,7 @@ on:
       - server/**
 
 env:
-  BINARY: rtype_server
+  BINARY: r-type_server
 
 jobs:
   build:

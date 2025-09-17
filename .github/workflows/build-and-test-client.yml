@@ -16,7 +16,7 @@ on:
       - client/**
 
 env:
-  BINARY: rtype_client
+  BINARY: r-type_client
 
 jobs:
   build:
