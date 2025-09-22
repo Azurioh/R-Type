@@ -11,18 +11,48 @@
 #include <string>
 
 namespace Subsystems::Render {
+    /**
+     * @class Image
+     *
+     * @brief A class that represents an image.
+     */
     class Image {
         public:
+            /**
+             * @brief Constructs an image with the specified image path.
+             *
+             * @param imagePath The path of the image.
+             */
             Image(std::string imagePath);
             ~Image();
 
+            /**
+             * @brief Gets the image.
+             *
+             * @return The image.
+             */
             void *getImage() const;
 
+            /**
+             * @brief Sets the image path.
+             *
+             * @param imagePath The path of the image.
+             */
             void setImage(std::string imagePath);
+
+            /**
+             * @brief Sets the image.
+             *
+             * @param image The image.
+             */
             void setImage(void *image);
+
+            /**
+             * @brief Deletes the image.
+             */
             void deleteImage();
 
         private:
-            void *_image;
+            void *_image; /*!> The image. */
     };
 }

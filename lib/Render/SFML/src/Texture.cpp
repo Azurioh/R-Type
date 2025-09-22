@@ -14,18 +14,17 @@ Subsystems::Render::Texture::Texture(std::string imagePath)
     _texture = new sf::Texture(imagePath);
 }
 
-Subsystems::Render::Texture::Texture(const Image& image)
-{
-    sf::Image *sfImage = static_cast<sf::Image *>(image.getImage());
-    _texture = new sf::Texture(*sfImage);
-}
-
 Subsystems::Render::Texture::~Texture()
 {
     deleteTexture();
 }
 
-void *Subsystems::Render::Texture::getTexture()
+std::string Subsystems::Render::Texture::getImagePath() const
+{
+    return _imagePath;
+}
+
+void *Subsystems::Render::Texture::getTexture() const
 {
     return _texture;
 }
@@ -36,10 +35,14 @@ void Subsystems::Render::Texture::setTexture(std::string imagePath)
     _texture = new sf::Texture(imagePath);
 }
 
-void Subsystems::Render::Texture::setTexture(const Image& image)
+void Subsystems::Render::Texture::setTexture(void *image)
 {
+    if (!image) {
+        return;
+    }
+
     deleteTexture();
-    _texture = new sf::Texture(*static_cast<sf::Image *>(image.getImage()));
+    _texture = new sf::Texture(*static_cast<sf::Image *>(image));
 }
 
 void Subsystems::Render::Texture::setTexture(void *texture)

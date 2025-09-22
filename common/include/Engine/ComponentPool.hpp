@@ -7,9 +7,7 @@
 
 #pragma once
 
-#define PAGINATION_SIZE 5
-#define PAGINATION_IDX(value) value / PAGINATION_SIZE
-#define IDX_IN_PAGINATION(value) value % PAGINATION_SIZE
+#include "Miscellaneous/Variables.hpp"
 
 #include <vector>
 #include <cstddef>
@@ -17,9 +15,21 @@
 #include <algorithm>
 
 namespace Engine {
+    /**
+     * @class ComponentPool
+     *
+     * @brief A template class that implements a component pool.
+     */
     template <typename ComponentType>
     class ComponentPool {
         public:
+
+            /**
+             * @brief Add a component to the pool.
+             *
+             * @param id The id of the component.
+             * @param component The component to add.
+             */
             void Add(std::size_t id, ComponentType component) {
                 _denseArray.push_back(component);
 
@@ -32,6 +42,12 @@ namespace Engine {
                 _sparseArray[PAGINATION_IDX(id)][IDX_IN_PAGINATION(id)] = _denseArray.size() - 1;
             };
 
+            /**
+             * @brief Get a component from the pool.
+             *
+             * @param id The id of the component.
+             * @return The component.
+             */
             ComponentType *Get(std::size_t id) {
                 if (PAGINATION_IDX(id) >= _sparseArray.size()) {
                     return nullptr;
@@ -48,6 +64,11 @@ namespace Engine {
                 return &_denseArray[index.value()];
             }
 
+            /**
+             * @brief Delete a component from the pool.
+             *
+             * @param id The id of the component.
+             */
             void Delete(std::size_t id) {
                 std::optional<std::size_t> index = _sparseArray[PAGINATION_IDX(id)][IDX_IN_PAGINATION(id)];
                 std::optional<std::pair<std::size_t, std::size_t>> backIndex = getIndexOfSparseArrayFromValue(_denseArray.size() - 1);
@@ -65,6 +86,12 @@ namespace Engine {
             }
 
         private:
+            /**
+             * @brief Get the index of a sparse array from a value.
+             *
+             * @param value The value to get the index of.
+             * @return The index of the sparse array.
+             */
             std::optional<std::pair<std::size_t, std::size_t>> getIndexOfSparseArrayFromValue(std::size_t value) {
                 std::size_t paginationIdx = 0;
                 std::size_t inPaginationIdx = 0;
@@ -81,7 +108,7 @@ namespace Engine {
                 return std::nullopt;
             }
 
-            std::vector<std::vector<std::optional<std::size_t>>> _sparseArray;
-            std::vector<ComponentType> _denseArray;
+            std::vector<std::vector<std::optional<std::size_t>>> _sparseArray; /*!> The sparse array. */
+            std::vector<ComponentType> _denseArray; /*!> The dense array. */
     };
 }
