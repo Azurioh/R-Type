@@ -35,16 +35,6 @@ void Subsystems::Render::Texture::setTexture(std::string imagePath)
     _texture = new sf::Texture(imagePath);
 }
 
-void Subsystems::Render::Texture::setTexture(void *image)
-{
-    if (!image) {
-        return;
-    }
-
-    deleteTexture();
-    _texture = new sf::Texture(*static_cast<sf::Image *>(image));
-}
-
 void Subsystems::Render::Texture::setTexture(void *texture)
 {
     deleteTexture();

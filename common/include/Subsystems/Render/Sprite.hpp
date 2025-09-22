@@ -65,6 +65,11 @@ namespace Subsystems::Render {
              */
             void setColor(void *color);
 
+            /**
+             * @brief Deletes the sprite.
+             */
+            void deleteSprite();
+
         private:
             Texture *_texture; /*!> The texture of the sprite. */
             void *_sprite; /*!> The sprite. */
