@@ -30,6 +30,12 @@ if [ ! -d "$TARGET_DIR" ]; then
     exit 1
 fi
 
+if command -v nproc >/dev/null 2>&1; then
+    NPROC=$(nproc)
+else
+    NPROC=$(sysctl -n hw.ncpu)
+fi
+
 # Define clean and build functions
 clean() {
     echo "Removing build directory for $TARGET"
@@ -45,7 +51,7 @@ build() {
     cmake -S "$TARGET_DIR" -B "$BUILD_DIR" -DCMAKE_BUILD_TYPE=Release
 
     echo "Compiling $TARGET"
-    cmake --build "$BUILD_DIR" -j"$(nproc)"
+    cmake --build "$BUILD_DIR" -j"$NPROC"
 
     local exe="$BUILD_DIR/r-type_$TARGET"
     if [ -f "$exe" ]; then
