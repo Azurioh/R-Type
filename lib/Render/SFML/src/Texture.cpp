@@ -16,32 +16,32 @@ Subsystems::Render::Texture::Texture(std::string imagePath)
 
 Subsystems::Render::Texture::~Texture()
 {
-    deleteTexture();
+    DeleteTexture();
 }
 
-std::string Subsystems::Render::Texture::getImagePath() const
+std::string Subsystems::Render::Texture::GetImagePath() const
 {
     return _imagePath;
 }
 
-void *Subsystems::Render::Texture::getTexture() const
+void *Subsystems::Render::Texture::GetTexture() const
 {
     return _texture;
 }
 
-void Subsystems::Render::Texture::setTexture(std::string imagePath)
+void Subsystems::Render::Texture::SetTexture(std::string imagePath)
 {
-    deleteTexture();
+    DeleteTexture();
     _texture = new sf::Texture(imagePath);
 }
 
-void Subsystems::Render::Texture::setTexture(void *texture)
+void Subsystems::Render::Texture::SetTexture(void *texture)
 {
-    deleteTexture();
+    DeleteTexture();
     _texture = texture;
 }
 
-void Subsystems::Render::Texture::deleteTexture()
+void Subsystems::Render::Texture::DeleteTexture()
 {
     if (_texture) {
         sf::Texture *sfTexture = static_cast<sf::Texture *>(_texture);

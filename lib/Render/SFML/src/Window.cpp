@@ -18,58 +18,58 @@ Subsystems::Render::Window::~Window()
 {
     sf::RenderWindow *window = static_cast<sf::RenderWindow *>(_window);
 
-    closeWindow();
+    CloseWindow();
     if (window) {
         delete window;
     }
 }
 
-unsigned int Subsystems::Render::Window::getWidth() const
+unsigned int Subsystems::Render::Window::GetWidth() const
 {
     return _width;
 }
 
-unsigned int Subsystems::Render::Window::getHeight() const
+unsigned int Subsystems::Render::Window::GetHeight() const
 {
     return _height;
 }
 
-std::string Subsystems::Render::Window::getWindowName() const
+std::string Subsystems::Render::Window::GetWindowName() const
 {
     return _windowName;
 }
 
-void *Subsystems::Render::Window::getWindow() const
+void *Subsystems::Render::Window::GetWindow() const
 {
     return _window;
 }
 
-bool Subsystems::Render::Window::isOpen() const
+bool Subsystems::Render::Window::IsOpen() const
 {
     return static_cast<sf::RenderWindow *>(_window)->isOpen();
 }
 
-void Subsystems::Render::Window::setWidth(unsigned int width)
+void Subsystems::Render::Window::SetWidth(unsigned int width)
 {
     _width = width;
 }
 
-void Subsystems::Render::Window::setHeight(unsigned int height)
+void Subsystems::Render::Window::SetHeight(unsigned int height)
 {
     _height = height;
 }
 
-void Subsystems::Render::Window::setWindowName(std::string windowName)
+void Subsystems::Render::Window::SetWindowName(std::string windowName)
 {
     _windowName = windowName;
 }
 
-void Subsystems::Render::Window::setWindow(void *window)
+void Subsystems::Render::Window::SetWindow(void *window)
 {
     _window = window;
 }
 
-void Subsystems::Render::Window::handleEvents()
+void Subsystems::Render::Window::HandleEvents()
 {
     sf::RenderWindow *window = static_cast<sf::RenderWindow *>(_window);
 
@@ -80,15 +80,15 @@ void Subsystems::Render::Window::handleEvents()
     }
 }
 
-void Subsystems::Render::Window::clearWindow(Color color)
+void Subsystems::Render::Window::ClearWindow(Color color)
 {
     sf::RenderWindow *window = static_cast<sf::RenderWindow *>(_window);
-    sf::Color sfColor = *static_cast<sf::Color *>(getColor(color));
+    sf::Color sfColor = *static_cast<sf::Color *>(GetColor(color));
 
     window->clear(sfColor);
 }
 
-void Subsystems::Render::Window::closeWindow()
+void Subsystems::Render::Window::CloseWindow()
 {
     sf::RenderWindow *window = static_cast<sf::RenderWindow *>(_window);
     if (window->isOpen()) {
@@ -96,23 +96,23 @@ void Subsystems::Render::Window::closeWindow()
     }
 }
 
-void Subsystems::Render::Window::draw(const Sprite& sprite)
+void Subsystems::Render::Window::Draw(const Sprite& sprite)
 {
     sf::RenderWindow *window = static_cast<sf::RenderWindow *>(_window);
-    sf::Sprite sfSprite = *static_cast<sf::Sprite *>(sprite.getSprite());
+    sf::Sprite sfSprite = *static_cast<sf::Sprite *>(sprite.GetSprite());
 
     window->draw(sfSprite);
 }
 
-void Subsystems::Render::Window::draw(const Text& text)
+void Subsystems::Render::Window::Draw(const Text& text)
 {
     sf::RenderWindow *window = static_cast<sf::RenderWindow *>(_window);
-    sf::Text sfText = *static_cast<sf::Text *>(text.getText());
+    sf::Text sfText = *static_cast<sf::Text *>(text.GetText());
 
     window->draw(sfText);
 }
 
-void Subsystems::Render::Window::refreshWindow()
+void Subsystems::Render::Window::RefreshWindow()
 {
     sf::RenderWindow *window = static_cast<sf::RenderWindow *>(_window);
 
@@ -121,13 +121,13 @@ void Subsystems::Render::Window::refreshWindow()
     window->create(sf::WindowHandle());
 }
 
-void Subsystems::Render::Window::displayWindow()
+void Subsystems::Render::Window::DisplayWindow()
 {
     sf::RenderWindow *window = static_cast<sf::RenderWindow *>(_window);
     window->display();
 }
 
-void *Subsystems::Render::Window::getColor(Color color) const
+void *Subsystems::Render::Window::GetColor(Color color) const
 {
     switch (color) {
         case Color::WHITE_COLOR:

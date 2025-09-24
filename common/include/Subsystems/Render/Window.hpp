@@ -53,99 +53,99 @@ namespace Subsystems::Render {
              *
              * @return The width of the window.
              */
-            unsigned int getWidth() const;
+            unsigned int GetWidth() const;
 
             /**
              * @brief Gets the height of the window.
              *
              * @return The height of the window.
              */
-            unsigned int getHeight() const;
+            unsigned int GetHeight() const;
 
             /**
              * @brief Gets the name of the window.
              *
              * @return The name of the window.
              */
-            std::string getWindowName() const;
+            std::string GetWindowName() const;
 
             /**
              * @brief Gets the window.
              *
              * @return The window.
              */
-            void *getWindow() const;
+            void *GetWindow() const;
 
             /**
              * @brief Checks if the window is open.
              *
              * @return True if the window is open, false otherwise.
              */
-            bool isOpen() const;
+            bool IsOpen() const;
 
             /**
              * @brief Sets the width of the window.
              *
              * @param width The width of the window.
              */
-            void setWidth(unsigned int width);
+            void SetWidth(unsigned int width);
 
             /**
              * @brief Sets the height of the window.
              *
              * @param height The height of the window.
              */
-            void setHeight(unsigned int height);
+            void SetHeight(unsigned int height);
 
             /**
              * @brief Sets the name of the window.
              *
              * @param windowName The name of the window.
              */
-            void setWindowName(std::string windowName);
+            void SetWindowName(std::string windowName);
 
             /**
              * @brief Sets the window.
              *
              * @param window The window.
              */
-            void setWindow(void *window);
+            void SetWindow(void *window);
 
             /**
              * @brief Handles the events of the window.
              */
-            void handleEvents(void);
+            void HandleEvents(void);
 
             /**
              * @brief Clears the window.
              */
-            void clearWindow(Color color);
+            void ClearWindow(Color color);
 
             /**
              * @brief Closes the window.
              */
-            void closeWindow(void);
+            void CloseWindow(void);
 
             /**
              * @brief Draws the sprite.
              */
-            void draw(const Sprite& sprite);
+            void Draw(const Sprite& sprite);
 
             /**
              * @brief Draws the text.
              */
-            void draw(const Text& text);
+            void Draw(const Text& text);
 
             /**
              * @brief Displays the window.
              */
-            void displayWindow(void);
+            void DisplayWindow(void);
 
         private:
             /**
              * @brief Refreshes the window.
              */
-            void refreshWindow(void);
+            void RefreshWindow(void);
 
             /**
              * @brief Gets the color.
@@ -153,7 +153,7 @@ namespace Subsystems::Render {
              * @param color The color.
              * @return The color.
              */
-            void *getColor(Color color) const;
+            void *GetColor(Color color) const;
 
             unsigned int _width; /*!> The width of the window. */
             unsigned int _height; /*!> The height of the window. */

@@ -35,40 +35,40 @@ namespace Subsystems::Render {
              *
              * @return The texture of the sprite.
              */
-            Texture *getTexture() const;
+            Texture *GetTexture() const;
 
             /**
              * @brief Gets the sprite.
              *
              * @return The sprite.
              */
-            void *getSprite() const;
+            void *GetSprite() const;
 
             /**
              * @brief Sets the texture of the sprite.
              *
              * @param texture The texture of the sprite.
              */
-            void setTexture(Texture *texture);
+            void SetTexture(Texture *texture);
 
             /**
              * @brief Sets the sprite of the sprite.
              *
              * @param sprite The sprite of the sprite.
              */
-            void setSprite(void *sprite);
+            void SetSprite(void *sprite);
 
             /**
              * @brief Sets the color of the sprite.
              *
              * @param color The color of the sprite.
              */
-            void setColor(void *color);
+            void SetColor(void *color);
 
             /**
              * @brief Deletes the sprite.
              */
-            void deleteSprite();
+            void DeleteSprite();
 
         private:
             Texture *_texture; /*!> The texture of the sprite. */

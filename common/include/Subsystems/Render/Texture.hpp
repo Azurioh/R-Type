@@ -34,33 +34,33 @@ namespace Subsystems::Render {
              *
              * @return The image path.
              */
-            std::string getImagePath() const;
+            std::string GetImagePath() const;
 
             /**
              * @brief Gets the texture.
              *
              * @return The texture.
              */
-            void *getTexture() const;
+            void *GetTexture() const;
 
             /**
              * @brief Sets the image path.
              *
              * @param imagePath The image path.
              */
-            void setTexture(std::string imagePath);
+            void SetTexture(std::string imagePath);
 
             /**
              * @brief Sets the texture.
              *
              * @param texture The texture.
              */
-            void setTexture(void *texture);
+            void SetTexture(void *texture);
 
             /**
              * @brief Deletes the texture.
              */
-            void deleteTexture();
+            void DeleteTexture();
 
         private:
             std::string _imagePath; /*!> The image path. */

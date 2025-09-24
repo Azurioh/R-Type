@@ -16,27 +16,27 @@ Subsystems::Render::Image::Image(std::string imagePath)
 
 Subsystems::Render::Image::~Image()
 {
-    deleteImage();
+    DeleteImage();
 }
 
-void *Subsystems::Render::Image::getImage() const
+void *Subsystems::Render::Image::GetImage() const
 {
     return _image;
 }
 
-void Subsystems::Render::Image::setImage(std::string imagePath)
+void Subsystems::Render::Image::SetImage(std::string imagePath)
 {
-    deleteImage();
+    DeleteImage();
     _image = new sf::Image(imagePath);
 }
 
-void Subsystems::Render::Image::setImage(void *image)
+void Subsystems::Render::Image::SetImage(void *image)
 {
-    deleteImage();
+    DeleteImage();
     _image = image;
 }
 
-void Subsystems::Render::Image::deleteImage()
+void Subsystems::Render::Image::DeleteImage()
 {
     if (_image) {
         sf::Image *sfImage = static_cast<sf::Image *>(_image);

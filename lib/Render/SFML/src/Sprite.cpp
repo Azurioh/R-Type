@@ -11,36 +11,36 @@
 
 Subsystems::Render::Sprite::Sprite(Texture *texture)
 {
-    sf::Texture *sfTexture = static_cast<sf::Texture *>(texture->getTexture());
+    sf::Texture *sfTexture = static_cast<sf::Texture *>(texture->GetTexture());
 
     _sprite = new sf::Sprite(*sfTexture);
 }
 
 Subsystems::Render::Sprite::~Sprite()
 {
-    deleteSprite();
+    DeleteSprite();
 }
 
-void *Subsystems::Render::Sprite::getSprite() const
+void *Subsystems::Render::Sprite::GetSprite() const
 {
     return _sprite;
 }
 
-void Subsystems::Render::Sprite::setSprite(void *sprite)
+void Subsystems::Render::Sprite::SetSprite(void *sprite)
 {
-    deleteSprite();
+    DeleteSprite();
     _sprite = sprite;
 }
 
-void Subsystems::Render::Sprite::setTexture(Texture *texture)
+void Subsystems::Render::Sprite::SetTexture(Texture *texture)
 {
-    sf::Texture *sfTexture = static_cast<sf::Texture *>(texture->getTexture());
+    sf::Texture *sfTexture = static_cast<sf::Texture *>(texture->GetTexture());
 
-    deleteSprite();
+    DeleteSprite();
     _sprite = new sf::Sprite(*sfTexture);
 }
 
-void Subsystems::Render::Sprite::deleteSprite()
+void Subsystems::Render::Sprite::DeleteSprite()
 {
     if (_sprite) {
         sf::Sprite *sfSprite = static_cast<sf::Sprite *>(_sprite);

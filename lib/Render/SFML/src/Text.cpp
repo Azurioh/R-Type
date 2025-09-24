@@ -30,72 +30,72 @@ Subsystems::Render::Text::~Text()
     }
 }
 
-std::string Subsystems::Render::Text::getTextStr() const
+std::string Subsystems::Render::Text::GetTextStr() const
 {
     return _textStr;
 }
 
-std::string Subsystems::Render::Text::getFontPath() const
+std::string Subsystems::Render::Text::GetFontPath() const
 {
     return _fontPath;
 }
 
-void *Subsystems::Render::Text::getFont() const
+void *Subsystems::Render::Text::GetFont() const
 {
     return _font;
 }
 
-void *Subsystems::Render::Text::getText() const
+void *Subsystems::Render::Text::GetText() const
 {
     return _text;
 }
 
-unsigned int Subsystems::Render::Text::getCharacterSize() const
+unsigned int Subsystems::Render::Text::GetCharacterSize() const
 {
     return _characterSize;
 }
 
-void Subsystems::Render::Text::setTextStr(std::string textStr)
+void Subsystems::Render::Text::SetTextStr(std::string textStr)
 {
     _textStr = textStr;
     _text = new sf::Text(*static_cast<sf::Font *>(_font), _textStr, _characterSize);
 
-    refreshText();
+    RefreshText();
 }
 
-void Subsystems::Render::Text::setFontPath(std::string fontPath)
+void Subsystems::Render::Text::SetFontPath(std::string fontPath)
 {
     _fontPath = fontPath;
     _font = new sf::Font(fontPath);
     _text = new sf::Text(*static_cast<sf::Font *>(_font), _textStr, _characterSize);
 
-    refreshText();
+    RefreshText();
 }
 
-void Subsystems::Render::Text::setFont(void *font)
+void Subsystems::Render::Text::SetFont(void *font)
 {
     _font = font;
     _text = new sf::Text(*static_cast<sf::Font *>(font), _textStr, _characterSize);
 
-    refreshText();
+    RefreshText();
 }
 
-void Subsystems::Render::Text::setText(void *text)
+void Subsystems::Render::Text::SetText(void *text)
 {
     _text = text;
 
-    refreshText();
+    RefreshText();
 }
 
-void Subsystems::Render::Text::setCharacterSize(unsigned int characterSize)
+void Subsystems::Render::Text::SetCharacterSize(unsigned int characterSize)
 {
     _characterSize = characterSize;
     _text = new sf::Text(*static_cast<sf::Font *>(_font), _textStr, _characterSize);
 
-    refreshText();
+    RefreshText();
 }
 
-void Subsystems::Render::Text::refreshText()
+void Subsystems::Render::Text::RefreshText()
 {
     sf::Font *sfFont = static_cast<sf::Font *>(_font);
     sf::Text *sfText = static_cast<sf::Text *>(_text);

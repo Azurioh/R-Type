@@ -36,75 +36,75 @@ namespace Subsystems::Render {
              *
              * @return The text string.
              */
-            std::string getTextStr() const;
+            std::string GetTextStr() const;
 
             /**
              * @brief Gets the font path.
              *
              * @return The font path.
              */
-            std::string getFontPath() const;
+            std::string GetFontPath() const;
 
             /**
              * @brief Gets the font.
              *
              * @return The font.
              */
-            void *getFont() const;
+            void *GetFont() const;
 
             /**
              * @brief Gets the text.
              *
              * @return The text.
              */
-            void *getText() const;
+            void *GetText() const;
 
             /**
              * @brief Gets the character size.
              *
              * @return The character size.
              */
-            unsigned int getCharacterSize() const;
+            unsigned int GetCharacterSize() const;
 
             /**
              * @brief Sets the text string.
              *
              * @param textStr The text string.
              */
-            void setTextStr(std::string textStr);
+            void SetTextStr(std::string textStr);
 
             /**
              * @brief Sets the font path.
              *
              * @param fontPath The font path.
              */
-            void setFontPath(std::string fontPath);
+            void SetFontPath(std::string fontPath);
 
             /**
              * @brief Sets the font.
              *
              * @param font The font.
              */
-            void setFont(void *font);
+            void SetFont(void *font);
 
             /**
              * @brief Sets the text.
              *
              * @param text The text.
              */
-            void setText(void *text);
+            void SetText(void *text);
 
             /**
              * @brief Sets the character size.
              *
              * @param characterSize The character size.
              */
-            void setCharacterSize(unsigned int characterSize);
+            void SetCharacterSize(unsigned int characterSize);
 
             /**
              * @brief Refreshes the text.
              */
-            void refreshText();
+            void RefreshText();
 
         private:
             std::string _textStr; /*!> The text string. */

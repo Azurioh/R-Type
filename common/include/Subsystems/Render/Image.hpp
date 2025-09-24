@@ -31,26 +31,26 @@ namespace Subsystems::Render {
              *
              * @return The image.
              */
-            void *getImage() const;
+            void *GetImage() const;
 
             /**
              * @brief Sets the image path.
              *
              * @param imagePath The path of the image.
              */
-            void setImage(std::string imagePath);
+            void SetImage(std::string imagePath);
 
             /**
              * @brief Sets the image.
              *
              * @param image The image.
              */
-            void setImage(void *image);
+            void SetImage(void *image);
 
             /**
              * @brief Deletes the image.
              */
-            void deleteImage();
+            void DeleteImage();
 
         private:
             void *_image; /*!> The image. */
