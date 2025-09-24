@@ -6,8 +6,8 @@
 */
 
 #include "Miscellaneous/Utils.hpp"
+#include "Network/Transceiver.hpp"
 #include "Exception/Generic.hpp"
-#include "Transciever.hpp"
 
 #include <exception>
 #include <iostream>
@@ -26,7 +26,7 @@ std::atomic<bool> isRunning(true);
  *
  * @param signal The signal number received.
  */
-void SignalHandler(std::int32_t signal) {
+static void SignalHandler(std::int32_t signal) {
     switch (signal) {
         case SIGINT:
             isRunning = false;
@@ -42,15 +42,15 @@ void SignalHandler(std::int32_t signal) {
  * @param port The port number to connect to.
  */
 static void Run(const std::uint16_t port) {
-    auto& transciever = Transciever::GetInstance();
+    Network::Transceiver server(port);
 
-    transciever.Initialize(port);
+    server.Start();
 
-    while (isRunning) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    while (isRunning.load()) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
-    transciever.Deinitialize();
+    server.Stop();
 }
 
 /**

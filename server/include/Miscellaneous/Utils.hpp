@@ -24,6 +24,7 @@ namespace Miscellaneous
              */
             enum LogLevel {
                 Informational, /*!> Informational log level */
+                Warning, /*!> Warning log level */
                 Error /*!> Error log level */
             };
 

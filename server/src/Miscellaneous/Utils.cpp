@@ -28,9 +28,17 @@ void Miscellaneous::Utils::Log(const std::string& message, const LogLevel level)
     auto timeT = std::chrono::system_clock::to_time_t(currentTimePoint);
     auto localTimeInfo = std::localtime(&timeT);
 
-    if (level != Error) {
-        std::cout << "\r[" << std::put_time(localTimeInfo, "%Y-%m-%d %H:%M:%S") << "] \033[0;32m>\033[0;0m " << message << std::endl;
-    } else {
-        std::cerr << "\r[" << std::put_time(localTimeInfo, "%Y-%m-%d %H:%M:%S") << "] \033[0;31m>\033[0;0m " << message << std::endl;
+    switch (level) {
+        case Informational:
+            std::cerr << "\r[" << std::put_time(localTimeInfo, "%Y-%m-%d %H:%M:%S") << "] \033[0;32m>\033[0;0m " << message << std::endl;
+            break;
+        case Warning:
+            std::cout << "\r[" << std::put_time(localTimeInfo, "%Y-%m-%d %H:%M:%S") << "] \033[0;33m>\033[0;0m " << message << std::endl;
+            break;
+        case Error:
+            std::cout << "\r[" << std::put_time(localTimeInfo, "%Y-%m-%d %H:%M:%S") << "] \033[0;31m>\033[0;0m " << message << std::endl;
+            break;
+        default:
+            break;
     }
 }
