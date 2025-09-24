@@ -25,7 +25,7 @@ namespace Subsystems::HMI {
              * @param input The input.
              * @param action The action.
              */
-            void bind(Input input, std::string action);
+            void Bind(Input input, std::string action);
 
             /**
              * @brief Gets an action from an input.
@@ -33,7 +33,7 @@ namespace Subsystems::HMI {
              * @param input The input.
              * @return The action.
              */
-            std::optional<std::string> getAction(const Input& input);
+            std::optional<std::string> GetAction(const Input& input);
 
         private:
             std::map<Input, std::string> _inputMap; /*!> The input map. */

@@ -8,12 +8,12 @@
 #include <algorithm>
 #include "Subsystems/HMI/InputMapper.hpp"
 
-void Subsystems::HMI::InputMapper::bind(Input input, std::string action)
+void Subsystems::HMI::InputMapper::Bind(Input input, std::string action)
 {
     _inputMap[input] = action;
 }
 
-std::optional<std::string> Subsystems::HMI::InputMapper::getAction(const Input& input)
+std::optional<std::string> Subsystems::HMI::InputMapper::GetAction(const Input& input)
 {
     auto it = _inputMap.find(input);
     if (it != _inputMap.end()) {

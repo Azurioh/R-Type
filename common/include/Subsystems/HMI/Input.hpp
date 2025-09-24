@@ -79,30 +79,43 @@ namespace Subsystems::HMI {
              *
              * @return The type of input.
              */
-            Type getType() const;
+            Type GetType() const;
 
             /**
              * @brief Gets the key code.
              *
              * @return The key code.
              */
-            std::size_t getKey() const;
+            std::size_t GetKey() const;
 
             /**
              * @brief Sets the type of input.
              *
              * @param type The type of input.
              */
-            void setType(Type type);
+            void SetType(Type type);
 
             /**
              * @brief Sets the key code.
              *
              * @param key The key code.
              */
-            void setKey(KeyCode key);
+            void SetKey(KeyCode key);
 
+            /**
+             * @brief Checks if the input is equal to the other input.
+             *
+             * @param other The other input.
+             * @return True if the input is equal to the other input, false otherwise.
+             */
             bool operator==(const Input& other) const;
+
+            /**
+             * @brief Checks if the input is less than the other input.
+             *
+             * @param other The other input.
+             * @return True if the input is less than the other input, false otherwise.
+             */
             bool operator<(const Input& other) const;
 
         private:

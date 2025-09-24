@@ -23,26 +23,26 @@ namespace Subsystems::HMI {
              *
              * @param input The input.
              */
-            void handleInput(const Input& input);
+            void HandleInput(const Input& input);
 
             /**
              * @brief Polls the actions.
              *
              * @return The actions.
              */
-            std::vector<std::string> pollActions();
+            std::vector<std::string> PollActions();
 
             /**
              * @brief Clears the actions.
              */
-            void clearActions();
+            void ClearActions();
 
             /**
              * @brief Gets the input mapper.
              *
              * @return The input mapper.
              */
-            InputMapper& getInputMapper();
+            InputMapper& GetInputMapper();
 
         private:
             InputMapper _inputMapper; /*!> The input mapper. */

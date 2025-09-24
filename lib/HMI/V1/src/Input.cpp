@@ -17,22 +17,22 @@ Subsystems::HMI::Input::Input(Type type, GamepadCode gamepad)
 {
 }
 
-Subsystems::HMI::Input::Type Subsystems::HMI::Input::getType() const
+Subsystems::HMI::Input::Type Subsystems::HMI::Input::GetType() const
 {
     return _type;
 }
 
-std::size_t Subsystems::HMI::Input::getKey() const
+std::size_t Subsystems::HMI::Input::GetKey() const
 {
     return _key;
 }
 
-void Subsystems::HMI::Input::setType(Type type)
+void Subsystems::HMI::Input::SetType(Type type)
 {
     _type = type;
 }
 
-void Subsystems::HMI::Input::setKey(KeyCode key)
+void Subsystems::HMI::Input::SetKey(KeyCode key)
 {
     _key = key;
 }
