@@ -5,15 +5,15 @@
 ** Utils.cpp
 */
 
-#include "Miscellaneous/Utils.hpp"
 #include "Exception/Generic.hpp"
+#include "Misc/Utils.hpp"
 
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <format>
 
-const std::string Miscellaneous::Utils::GetTextOption(char **begin, char **end, const std::string& name)
+const std::string Misc::Utils::GetTextOption(char **begin, char **end, const std::string& name)
 {
     char **itr = std::find(begin, end, name);
 
@@ -23,7 +23,7 @@ const std::string Miscellaneous::Utils::GetTextOption(char **begin, char **end, 
     throw Exception::Generic(std::format("Missing argument for option '{}'.", name));
 }
 
-void Miscellaneous::Utils::Log(const std::string& message, const LogLevel level)
+void Misc::Utils::Log(const std::string& message, const LogLevel level)
 {
     auto currentTimePoint = std::chrono::system_clock::now();
     auto timeT = std::chrono::system_clock::to_time_t(currentTimePoint);
@@ -44,7 +44,7 @@ void Miscellaneous::Utils::Log(const std::string& message, const LogLevel level)
     }
 }
 
-std::string Miscellaneous::Utils::BytesToHex(const std::vector<std::uint8_t>& data)
+std::string Misc::Utils::BytesToHex(const std::vector<std::uint8_t>& data)
 {
     std::stringstream ss = {};
 

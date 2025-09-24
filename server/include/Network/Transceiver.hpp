@@ -73,14 +73,14 @@ namespace Network
              * @param message The message to send.
              * @return True if the client was found and data was sent, false otherwise.
              */
-            bool SendToClient(std::uint32_t id, const Client::Message& message);
+            bool SendToClient(std::uint32_t id, const Message& message);
 
             /**
              * @brief Broadcast data to all connected clients.
              *
              * @param message The message to broadcast.
              */
-            void BroadcastToAll(const Client::Message& message);
+            void BroadcastToAll(const Message& message);
 
         private:
             /**
@@ -107,9 +107,9 @@ namespace Network
              * @brief Handle data received from a client.
              *
              * @param id The identifier of the client that sent the data.
-             * @param message The received message.
+             * @param raw The received message.
              */
-            void HandleClientData(std::uint32_t id, const Client::Message& message);
+            void HandleClientData(std::uint32_t id, const std::vector<std::uint8_t>& raw);
 
             /**
              * @brief Generate a unique client identifier.

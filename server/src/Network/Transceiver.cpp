@@ -6,8 +6,8 @@
 */
 
 #include "Network/Transceiver.hpp"
-#include "Miscellaneous/Utils.hpp"
 #include "Exception/Generic.hpp"
+#include "Misc/Utils.hpp"
 
 #include <format>
 
@@ -21,7 +21,7 @@ Network::Transceiver::~Transceiver()
 void Network::Transceiver::Start()
 {
     if (_isRunning.load()) {
-        Miscellaneous::Utils::Log("Transceiver is already running", Miscellaneous::Utils::LogLevel::Warning);
+        Misc::Utils::Log("Transceiver is already running", Misc::Utils::LogLevel::Warning);
     } else {
         _isRunning.store(true);
 
@@ -32,14 +32,14 @@ void Network::Transceiver::Start()
                 try {
                     _context.run();
                 } catch (const std::exception& ex) {
-                    Miscellaneous::Utils::Log(std::format("IO context error: {}", ex.what()), Miscellaneous::Utils::LogLevel::Error);
+                    Misc::Utils::Log(std::format("IO context error: {}", ex.what()), Misc::Utils::LogLevel::Error);
                 }
             });
 
-            Miscellaneous::Utils::Log(std::format("Server started on port {}", _port), Miscellaneous::Utils::LogLevel::Informational);
+            Misc::Utils::Log(std::format("Server started on port {}", _port), Misc::Utils::LogLevel::Informational);
         } catch (const std::exception& ex) {
             _isRunning.store(false);
-            throw new Exception::Generic(std::format("Failed to start server: {}", ex.what()));
+            throw Exception::Generic(std::format("Failed to start server: {}", ex.what()));
         }
     }
 
@@ -73,9 +73,9 @@ void Network::Transceiver::Stop()
 
             _context.restart();
 
-            Miscellaneous::Utils::Log("Server stopped", Miscellaneous::Utils::LogLevel::Informational);
+            Misc::Utils::Log("Server stopped", Misc::Utils::LogLevel::Informational);
         } catch (const std::exception& ex) {
-            throw new Exception::Generic(std::format("Failed to stop server: {}", ex.what()));
+            throw Exception::Generic(std::format("Failed to stop server: {}", ex.what()));
         }
     }
 }
@@ -91,7 +91,7 @@ std::size_t Network::Transceiver::GetClientCount() const
     return _clients.size();
 }
 
-bool Network::Transceiver::SendToClient(std::uint32_t id, const Client::Message& message)
+bool Network::Transceiver::SendToClient(std::uint32_t id, const Message& message)
 {
     std::lock_guard<std::mutex> lock(_clientsMutex);
     auto it = _clients.find(id);
@@ -102,7 +102,7 @@ bool Network::Transceiver::SendToClient(std::uint32_t id, const Client::Message&
     return false;
 }
 
-void Network::Transceiver::BroadcastToAll(const Client::Message& message)
+void Network::Transceiver::BroadcastToAll(const Message& message)
 {
     std::lock_guard<std::mutex> lock(_clientsMutex);
     for (const auto& [id, client] : _clients) {
@@ -135,15 +135,15 @@ void Network::Transceiver::HandleAccept(std::shared_ptr<boost::asio::ip::tcp::so
 
             client->StartAsync([this](std::uint32_t id) {
                 HandleClientDisconnect(id);
-            }, [this](std::uint32_t id, const Client::Message& message) {
-                HandleClientData(id, message);
+            }, [this](std::uint32_t id, const std::vector<std::uint8_t>& raw) {
+                HandleClientData(id, raw);
             });
-        } catch (const std::exception& e) {
-            Miscellaneous::Utils::Log(std::format("Error handling new connection: {}", e.what()), Miscellaneous::Utils::LogLevel::Error);
+        } catch (const std::exception& ex) {
+            Misc::Utils::Log(std::format("Error handling new connection: {}", ex.what()), Misc::Utils::LogLevel::Error);
         }
     } else if (ec) {
         if (ec != boost::asio::error::operation_aborted) {
-            Miscellaneous::Utils::Log(std::format("Accept error: {}", ec.message()), Miscellaneous::Utils::LogLevel::Error);
+            Misc::Utils::Log(std::format("Accept error: {}", ec.message()), Misc::Utils::LogLevel::Error);
         }
     }
 
@@ -163,15 +163,20 @@ void Network::Transceiver::HandleClientDisconnect(std::uint32_t id)
     }
 }
 
-void Network::Transceiver::HandleClientData(std::uint32_t id, const Client::Message& message)
+void Network::Transceiver::HandleClientData(std::uint32_t id, const std::vector<std::uint8_t>& raw)
 {
-    Miscellaneous::Utils::Log(std::format("Received message from client {}: {}", id, message.ToHexString()), Miscellaneous::Utils::LogLevel::Informational);
+    if (raw.size() >= 6) {
+        Misc::Utils::Log(std::format("Received raw message from client {}: {}", id, Misc::Utils::BytesToHex(raw)), Misc::Utils::LogLevel::Informational);
 
-    std::lock_guard<std::mutex> lock(_clientsMutex);
-    auto it = _clients.find(id);
-    if (it != _clients.end() && it->second) {
-        it->second->SendAsync(message);
+        std::lock_guard<std::mutex> lock(_clientsMutex);
+        auto it = _clients.find(id);
+        if (it != _clients.end() && it->second) {
+            Message message(raw);
+
+            it->second->SendAsync(message);
+        }
     }
+
 }
 
 std::uint32_t Network::Transceiver::GenerateClientId()

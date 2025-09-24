@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace Miscellaneous
+namespace Misc
 {
     /**
      * @class Utils

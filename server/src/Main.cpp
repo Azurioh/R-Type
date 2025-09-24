@@ -5,9 +5,9 @@
 ** Main.cpp
 */
 
-#include "Miscellaneous/Utils.hpp"
 #include "Network/Transceiver.hpp"
 #include "Exception/Generic.hpp"
+#include "Misc/Utils.hpp"
 
 #include <exception>
 #include <iostream>
@@ -64,7 +64,7 @@ std::int32_t main(std::int32_t argc, char **argv) {
             throw Exception::Generic("You must provide the port number.");
         }
 
-        const std::string portTextValue = Miscellaneous::Utils::GetTextOption(argv, argv + argc, "-p");
+        const std::string portTextValue = Misc::Utils::GetTextOption(argv, argv + argc, "-p");
         const std::uint16_t portValue = static_cast<std::uint16_t>(std::stoi(portTextValue));
 
         std::signal(SIGINT, SignalHandler);

@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "Network/Message.hpp"
 #include "Variables.hpp"
 
 #include <boost/asio.hpp>
@@ -31,21 +32,6 @@ namespace Network
     {
         public:
             /**
-             * @struct Message
-             * @brief Represents a complete message with header (ID + length) and content.
-             */
-            struct Message {
-                std::uint16_t id; /*!< The message ID (2 bytes) */
-                std::vector<std::uint8_t> content; /*!< The message content */
-
-                /**
-                 * @brief Get the complete message as hex string for logging.
-                 * @return Hex representation of the entire message (header + content).
-                 */
-                std::string ToHexString() const;
-            };
-
-            /**
              * @brief Callback function type for handling disconnection events.
              */
             using DisconnectCallback = std::function<void(std::uint32_t)>;
@@ -53,7 +39,7 @@ namespace Network
             /**
              * @brief Callback function type for handling received data.
              */
-            using DataCallback = std::function<void(std::uint32_t, const Message&)>;
+            using DataCallback = std::function<void(std::uint32_t, const std::vector<std::uint8_t>&)>;
 
             /**
              * @brief Create a new client.
@@ -138,10 +124,10 @@ namespace Network
 
             std::array<std::uint8_t, HEADER_SIZE> _headerBuffer; /*!< Buffer for incoming header data */
             std::vector<std::uint8_t> _contentBuffer; /*!< Buffer for incoming content data */
-            std::uint16_t _currentId; /*!< Current message ID being processed */
             std::uint32_t _currentLength; /*!< Current message content length being processed */
+            std::uint16_t _currentId; /*!< Current message ID being processed */
 
-            std::vector<Message> _writeQueue; /*!< Queue for outgoing messages */
+            std::deque<Message> _writeQueue; /*!< Queue for outgoing messages */
             std::mutex _writeQueueMutex; /*!< Mutex to protect the write queue */
             bool _writing; /*!< Flag to indicate if a write operation is in progress */
 
