@@ -7,6 +7,8 @@
 
 #include "Network/Transceiver.hpp"
 #include "Miscellaneous/Utils.hpp"
+#include "Exception/Generic.hpp"
+
 #include <format>
 
 Network::Transceiver::Transceiver(std::uint16_t port) : _acceptor(_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)), _running(false), _nextId(1), _port(port) {}
@@ -37,8 +39,7 @@ void Network::Transceiver::Start()
             Miscellaneous::Utils::Log(std::format("Server started on port {}", _port), Miscellaneous::Utils::LogLevel::Informational);
         } catch (const std::exception& ex) {
             _running.store(false);
-            Miscellaneous::Utils::Log(std::format("Failed to start server: {}", ex.what()), Miscellaneous::Utils::LogLevel::Error);
-            throw;
+            throw new Exception::Generic(std::format("Failed to start server: {}", ex.what()));
         }
     }
 
@@ -74,7 +75,7 @@ void Network::Transceiver::Stop()
 
             Miscellaneous::Utils::Log("Server stopped", Miscellaneous::Utils::LogLevel::Informational);
         } catch (const std::exception& ex) {
-            Miscellaneous::Utils::Log(std::format("Error stopping server: {}", ex.what()), Miscellaneous::Utils::LogLevel::Error);
+            throw new Exception::Generic(std::format("Failed to stop server: {}", ex.what()));
         }
     }
 }
@@ -90,10 +91,10 @@ std::size_t Network::Transceiver::GetClientCount() const
     return _clients.size();
 }
 
-bool Network::Transceiver::SendToClient(std::uint32_t clientId, const Client::Message& message)
+bool Network::Transceiver::SendToClient(std::uint32_t id, const Client::Message& message)
 {
     std::lock_guard<std::mutex> lock(_clientsMutex);
-    auto it = _clients.find(clientId);
+    auto it = _clients.find(id);
     if (it != _clients.end() && it->second && it->second->IsConnected()) {
         it->second->SendAsync(message);
         return true;
@@ -115,14 +116,14 @@ void Network::Transceiver::StartAccept()
 {
     auto socket = std::make_shared<boost::asio::ip::tcp::socket>(_context);
 
-    _acceptor.async_accept(*socket, [this, socket](const boost::system::error_code& error) {
-        HandleAccept(socket, error);
+    _acceptor.async_accept(*socket, [this, socket](const boost::system::error_code& ec) {
+        HandleAccept(socket, ec);
     });
 }
 
-void Network::Transceiver::HandleAccept(std::shared_ptr<boost::asio::ip::tcp::socket> socket, const boost::system::error_code& error)
+void Network::Transceiver::HandleAccept(std::shared_ptr<boost::asio::ip::tcp::socket> socket, const boost::system::error_code& ec)
 {
-    if (!error && _running.load()) {
+    if (!ec && _running.load()) {
         try {
             std::uint32_t id = GenerateClientId();
             auto client = std::make_shared<Client>(id, socket);
@@ -132,26 +133,17 @@ void Network::Transceiver::HandleAccept(std::shared_ptr<boost::asio::ip::tcp::so
                 _clients[id] = client;
             }
 
-            client->StartAsync([this](std::uint32_t clientId) {
-                HandleClientDisconnect(clientId);
-            }, [this](std::uint32_t clientId, const Client::Message& message) {
-                HandleClientData(clientId, message);
+            client->StartAsync([this](std::uint32_t id) {
+                HandleClientDisconnect(id);
+            }, [this](std::uint32_t id, const Client::Message& message) {
+                HandleClientData(id, message);
             });
-
-            std::size_t clientCount;
-            {
-                std::lock_guard<std::mutex> lock(_clientsMutex);
-                clientCount = _clients.size();
-            }
-
-            Miscellaneous::Utils::Log(std::format("Client {} connected successfully. Total clients: {}", id, clientCount), Miscellaneous::Utils::LogLevel::Informational);
-
         } catch (const std::exception& e) {
             Miscellaneous::Utils::Log(std::format("Error handling new connection: {}", e.what()), Miscellaneous::Utils::LogLevel::Error);
         }
-    } else if (error) {
-        if (error != boost::asio::error::operation_aborted) {
-            Miscellaneous::Utils::Log(std::format("Accept error: {}", error.message()), Miscellaneous::Utils::LogLevel::Error);
+    } else if (ec) {
+        if (ec != boost::asio::error::operation_aborted) {
+            Miscellaneous::Utils::Log(std::format("Accept error: {}", ec.message()), Miscellaneous::Utils::LogLevel::Error);
         }
     }
 
@@ -160,22 +152,23 @@ void Network::Transceiver::HandleAccept(std::shared_ptr<boost::asio::ip::tcp::so
     }
 }
 
-void Network::Transceiver::HandleClientDisconnect(std::uint32_t clientId)
+void Network::Transceiver::HandleClientDisconnect(std::uint32_t id)
 {
     std::lock_guard<std::mutex> lock(_clientsMutex);
-    auto it = _clients.find(clientId);
+
+    auto it = _clients.find(id);
     if (it != _clients.end()) {
-        Miscellaneous::Utils::Log(std::format("Client {} disconnected. Remaining clients: {}", clientId, _clients.size() - 1), Miscellaneous::Utils::LogLevel::Informational);
+        it->second->Disconnect();
         _clients.erase(it);
     }
 }
 
-void Network::Transceiver::HandleClientData(std::uint32_t clientId, const Client::Message& message)
+void Network::Transceiver::HandleClientData(std::uint32_t id, const Client::Message& message)
 {
-    Miscellaneous::Utils::Log(std::format("Received message with header {} and {} bytes body from client {}", message.header, message.body.size(), clientId), Miscellaneous::Utils::LogLevel::Informational);
+    Miscellaneous::Utils::Log(std::format("Received message with header {} and {} bytes body from client {}", message.header, message.body.size(), id), Miscellaneous::Utils::LogLevel::Informational);
 
     std::lock_guard<std::mutex> lock(_clientsMutex);
-    auto it = _clients.find(clientId);
+    auto it = _clients.find(id);
     if (it != _clients.end() && it->second) {
         it->second->SendAsync(message);
     }

@@ -22,6 +22,7 @@ void Network::Client::StartAsync(DisconnectCallback onDisconnect, DataCallback o
 {
     _onDisconnect = onDisconnect;
     _onData = onData;
+
     StartRead();
 }
 
@@ -30,15 +31,15 @@ void Network::Client::StartRead()
     if (IsConnected()) {
         auto self = shared_from_this();
 
-        _socket->async_read_some(boost::asio::buffer(_readBuffer), [this, self](const boost::system::error_code& error, std::size_t bytes) {
-            HandleRead(error, bytes);
+        _socket->async_read_some(boost::asio::buffer(_readBuffer), [this, self](const boost::system::error_code& ec, std::size_t bytes) {
+            HandleRead(ec, bytes);
         });
     }
 }
 
-void Network::Client::HandleRead(const boost::system::error_code& error, std::size_t bytes)
+void Network::Client::HandleRead(const boost::system::error_code& ec, std::size_t bytes)
 {
-    if (!error && bytes > 0) {
+    if (!ec && bytes > 0) {
         std::vector<std::uint8_t> data(_readBuffer.begin(), _readBuffer.begin() + bytes);
 
         if (data.size() >= 1) {
@@ -58,8 +59,8 @@ void Network::Client::HandleRead(const boost::system::error_code& error, std::si
 
         StartRead();
     } else {
-        if (error != boost::asio::error::operation_aborted && error != boost::asio::error::eof && error != boost::asio::error::connection_reset) {
-            Miscellaneous::Utils::Log(std::format("Client {} read error: {}", _id, error.message()), Miscellaneous::Utils::LogLevel::Warning);
+        if (ec != boost::asio::error::operation_aborted && ec != boost::asio::error::eof && ec != boost::asio::error::connection_reset) {
+            Miscellaneous::Utils::Log(std::format("Client {} read error: {}", _id, ec.message()), Miscellaneous::Utils::LogLevel::Warning);
         }
 
         if (_onDisconnect) {
@@ -96,18 +97,18 @@ void Network::Client::SendAsync(const Message& message)
                 serializedData.push_back(message.header);
                 serializedData.insert(serializedData.end(), message.body.begin(), message.body.end());
 
-                boost::asio::async_write(*_socket, boost::asio::buffer(serializedData), [this, self](const boost::system::error_code& error, std::size_t bytes) {
-                    HandleWrite(error, bytes);
+                boost::asio::async_write(*_socket, boost::asio::buffer(serializedData), [this, self](const boost::system::error_code& ec, std::size_t bytes) {
+                    HandleWrite(ec, bytes);
                 });
             }
         });
     }
 }
 
-void Network::Client::HandleWrite(const boost::system::error_code& error, std::size_t)
+void Network::Client::HandleWrite(const boost::system::error_code& ec, std::size_t)
 {
-    if (!error) {
-        Message nextMessage;
+    if (!ec) {
+        Message nextMessage = {};
         bool hasNext = false;
 
         {
@@ -129,15 +130,15 @@ void Network::Client::HandleWrite(const boost::system::error_code& error, std::s
             serializedData.push_back(nextMessage.header);
             serializedData.insert(serializedData.end(), nextMessage.body.begin(), nextMessage.body.end());
 
-            boost::asio::async_write(*_socket, boost::asio::buffer(serializedData), [this, self](const boost::system::error_code& error, std::size_t bytes) {
-                HandleWrite(error, bytes);
+            boost::asio::async_write(*_socket, boost::asio::buffer(serializedData), [this, self](const boost::system::error_code& ec, std::size_t bytes) {
+                HandleWrite(ec, bytes);
             });
         } else {
             _writing = false;
         }
     } else {
         _writing = false;
-        Miscellaneous::Utils::Log(std::format("Client {} write error: {}", _id, error.message()), Miscellaneous::Utils::LogLevel::Error);
+        Miscellaneous::Utils::Log(std::format("Client {} write error: {}", _id, ec.message()), Miscellaneous::Utils::LogLevel::Error);
 
         if (_onDisconnect) {
             _onDisconnect(_id);
@@ -149,8 +150,8 @@ void Network::Client::Disconnect()
 {
     if (_socket && _socket->is_open()) {
         boost::system::error_code ec = {};
-        _socket->close(ec);
 
+        _socket->close(ec);
         if (ec) {
             Miscellaneous::Utils::Log(std::format("Error closing socket for client {}: {}", _id, ec.message()), Miscellaneous::Utils::LogLevel::Error);
         } else {
