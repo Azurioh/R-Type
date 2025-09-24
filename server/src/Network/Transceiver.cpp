@@ -11,7 +11,7 @@
 
 #include <format>
 
-Network::Transceiver::Transceiver(std::uint16_t port) : _acceptor(_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)), _running(false), _nextId(1), _port(port) {}
+Network::Transceiver::Transceiver(std::uint16_t port) : _acceptor(_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)), _nextId(1), _isRunning(false), _port(port) {}
 
 Network::Transceiver::~Transceiver()
 {
@@ -20,10 +20,10 @@ Network::Transceiver::~Transceiver()
 
 void Network::Transceiver::Start()
 {
-    if (_running.load()) {
+    if (_isRunning.load()) {
         Miscellaneous::Utils::Log("Transceiver is already running", Miscellaneous::Utils::LogLevel::Warning);
     } else {
-        _running.store(true);
+        _isRunning.store(true);
 
         try {
             StartAccept();
@@ -38,7 +38,7 @@ void Network::Transceiver::Start()
 
             Miscellaneous::Utils::Log(std::format("Server started on port {}", _port), Miscellaneous::Utils::LogLevel::Informational);
         } catch (const std::exception& ex) {
-            _running.store(false);
+            _isRunning.store(false);
             throw new Exception::Generic(std::format("Failed to start server: {}", ex.what()));
         }
     }
@@ -47,8 +47,8 @@ void Network::Transceiver::Start()
 
 void Network::Transceiver::Stop()
 {
-    if (_running.load()) {
-        _running.store(false);
+    if (_isRunning.load()) {
+        _isRunning.store(false);
 
         try {
             if (_acceptor.is_open()) {
@@ -82,7 +82,7 @@ void Network::Transceiver::Stop()
 
 bool Network::Transceiver::IsRunning() const
 {
-    return _running.load();
+    return _isRunning.load();
 }
 
 std::size_t Network::Transceiver::GetClientCount() const
@@ -123,7 +123,7 @@ void Network::Transceiver::StartAccept()
 
 void Network::Transceiver::HandleAccept(std::shared_ptr<boost::asio::ip::tcp::socket> socket, const boost::system::error_code& ec)
 {
-    if (!ec && _running.load()) {
+    if (!ec && _isRunning.load()) {
         try {
             std::uint32_t id = GenerateClientId();
             auto client = std::make_shared<Client>(id, socket);
@@ -147,7 +147,7 @@ void Network::Transceiver::HandleAccept(std::shared_ptr<boost::asio::ip::tcp::so
         }
     }
 
-    if (_running.load()) {
+    if (_isRunning.load()) {
         StartAccept();
     }
 }
@@ -165,7 +165,7 @@ void Network::Transceiver::HandleClientDisconnect(std::uint32_t id)
 
 void Network::Transceiver::HandleClientData(std::uint32_t id, const Client::Message& message)
 {
-    Miscellaneous::Utils::Log(std::format("Received message with header {} and {} bytes body from client {}", message.header, message.body.size(), id), Miscellaneous::Utils::LogLevel::Informational);
+    Miscellaneous::Utils::Log(std::format("Received message from client {}: {}", id, message.ToHexString()), Miscellaneous::Utils::LogLevel::Informational);
 
     std::lock_guard<std::mutex> lock(_clientsMutex);
     auto it = _clients.find(id);

@@ -69,11 +69,11 @@ namespace Network
             /**
              * @brief Send data to a specific client.
              *
-             * @param clientId The ID of the client to send data to.
+             * @param id The ID of the client to send data to.
              * @param message The message to send.
              * @return True if the client was found and data was sent, false otherwise.
              */
-            bool SendToClient(std::uint32_t clientId, const Client::Message& message);
+            bool SendToClient(std::uint32_t id, const Client::Message& message);
 
             /**
              * @brief Broadcast data to all connected clients.
@@ -92,24 +92,24 @@ namespace Network
              * @brief Handle a new client connection.
              *
              * @param socket The socket for the new connection.
-             * @param error The error code from the accept operation.
+             * @param ec The error code from the accept operation.
              */
-            void HandleAccept(std::shared_ptr<boost::asio::ip::tcp::socket> socket, const boost::system::error_code& error);
+            void HandleAccept(std::shared_ptr<boost::asio::ip::tcp::socket> socket, const boost::system::error_code& ec);
 
             /**
              * @brief Handle client disconnection.
              *
-             * @param clientId The identifier of the client that disconnected.
+             * @param id The identifier of the client that disconnected.
              */
-            void HandleClientDisconnect(std::uint32_t clientId);
+            void HandleClientDisconnect(std::uint32_t id);
 
             /**
              * @brief Handle data received from a client.
              *
-             * @param clientId The identifier of the client that sent the data.
+             * @param id The identifier of the client that sent the data.
              * @param message The received message.
              */
-            void HandleClientData(std::uint32_t clientId, const Client::Message& message);
+            void HandleClientData(std::uint32_t id, const Client::Message& message);
 
             /**
              * @brief Generate a unique client identifier.
@@ -123,9 +123,9 @@ namespace Network
             boost::asio::ip::tcp::acceptor _acceptor; /*!< The acceptor for incoming connections */
 
             std::unordered_map<std::uint32_t, std::shared_ptr<Client>> _clients; /*!< Map of connected clients */
-            mutable std::mutex _clientsMutex; /*!< Mutex to protect the clients map */
-            std::atomic<bool> _running; /*!< Flag indicating if the server is running */
             std::atomic<std::uint32_t> _nextId; /*!< Counter for generating unique client identifiers */
+            mutable std::mutex _clientsMutex; /*!< Mutex to protect the clients map */
+            std::atomic<bool> _isRunning; /*!< Flag indicating if the server is running */
             std::uint16_t _port; /*!< The port number the server listens on */
     };
 }

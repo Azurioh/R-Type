@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 #include <format>
 
 const std::string Miscellaneous::Utils::GetTextOption(char **begin, char **end, const std::string& name)
@@ -41,4 +42,19 @@ void Miscellaneous::Utils::Log(const std::string& message, const LogLevel level)
         default:
             break;
     }
+}
+
+std::string Miscellaneous::Utils::BytesToHex(const std::vector<std::uint8_t>& data)
+{
+    std::stringstream ss = {};
+
+    ss << std::hex << std::uppercase;
+    for (size_t i = 0; i < data.size(); i++) {
+        if (i > 0) {
+            ss << " ";
+        }
+        ss << std::setfill('0') << std::setw(2) << static_cast<std::int32_t>(data[i]);
+    }
+
+    return ss.str();
 }

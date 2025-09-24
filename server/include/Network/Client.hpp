@@ -7,10 +7,13 @@
 
 #pragma once
 
+#include "Variables.hpp"
+
 #include <boost/asio.hpp>
+#include <functional>
 #include <cstdint>
 #include <memory>
-#include <functional>
+#include <vector>
 #include <array>
 #include <mutex>
 
@@ -29,11 +32,17 @@ namespace Network
         public:
             /**
              * @struct Message
-             * @brief Represents a message with a header and body.
+             * @brief Represents a complete message with header (ID + length) and content.
              */
             struct Message {
-                std::uint8_t header; /*!< The header of the message */
-                std::vector<std::uint8_t> body; /*!> The body of the message */
+                std::uint16_t id; /*!< The message ID (2 bytes) */
+                std::vector<std::uint8_t> content; /*!< The message content */
+
+                /**
+                 * @brief Get the complete message as hex string for logging.
+                 * @return Hex representation of the entire message (header + content).
+                 */
+                std::string ToHexString() const;
             };
 
             /**
@@ -90,17 +99,30 @@ namespace Network
 
         private:
             /**
-             * @brief Start asynchronous read operation.
+             * @brief Start asynchronous read operation for the message header.
              */
-            void StartRead();
+            void StartReadHeader();
 
             /**
-             * @brief Handle completed read operation.
+             * @brief Handle completed header read operation.
              *
              * @param error The error code from the read operation.
              * @param bytes Number of bytes read.
              */
-            void HandleRead(const boost::system::error_code& error, std::size_t bytes);
+            void HandleReadHeader(const boost::system::error_code& error, std::size_t bytes);
+
+            /**
+             * @brief Start asynchronous read operation for the message content.
+             */
+            void StartReadContent();
+
+            /**
+             * @brief Handle completed content read operation.
+             *
+             * @param error The error code from the read operation.
+             * @param bytes Number of bytes read.
+             */
+            void HandleReadContent(const boost::system::error_code& error, std::size_t bytes);
 
             /**
              * @brief Handle completed write operation.
@@ -114,7 +136,11 @@ namespace Network
             boost::asio::ip::udp::endpoint _endpoint; /*!< The endpoint associated with the client */
             std::uint32_t _id; /*!< The unique identifier for the client */
 
-            std::array<std::uint8_t, 1024> _readBuffer; /*!< Buffer for incoming data */
+            std::array<std::uint8_t, HEADER_SIZE> _headerBuffer; /*!< Buffer for incoming header data */
+            std::vector<std::uint8_t> _contentBuffer; /*!< Buffer for incoming content data */
+            std::uint16_t _currentId; /*!< Current message ID being processed */
+            std::uint32_t _currentLength; /*!< Current message content length being processed */
+
             std::vector<Message> _writeQueue; /*!< Queue for outgoing messages */
             std::mutex _writeQueueMutex; /*!< Mutex to protect the write queue */
             bool _writing; /*!< Flag to indicate if a write operation is in progress */

@@ -13,6 +13,20 @@ Network::Client::Client(std::uint32_t id, std::shared_ptr<boost::asio::ip::tcp::
     Miscellaneous::Utils::Log(std::format("Client {} connected from {}:{}.", _id, _socket->remote_endpoint().address().to_string(), _socket->remote_endpoint().port()), Miscellaneous::Utils::LogLevel::Informational);
 }
 
+std::string Network::Client::Message::ToHexString() const
+{
+    std::vector<std::uint8_t> message = {};
+    std::uint32_t length = static_cast<std::uint32_t>(content.size());
+
+    message.resize(6 + content.size());
+
+    std::memcpy(message.data(), &id, 2);
+    std::memcpy(message.data() + 2, &length, 4);
+    std::memcpy(message.data() + 6, content.data(), content.size());
+
+    return Miscellaneous::Utils::BytesToHex(message);
+}
+
 std::uint32_t Network::Client::GetId() const
 {
     return _id;
@@ -23,44 +37,84 @@ void Network::Client::StartAsync(DisconnectCallback onDisconnect, DataCallback o
     _onDisconnect = onDisconnect;
     _onData = onData;
 
-    StartRead();
+    StartReadHeader();
 }
 
-void Network::Client::StartRead()
+void Network::Client::StartReadHeader()
 {
     if (IsConnected()) {
         auto self = shared_from_this();
 
-        _socket->async_read_some(boost::asio::buffer(_readBuffer), [this, self](const boost::system::error_code& ec, std::size_t bytes) {
-            HandleRead(ec, bytes);
+        boost::asio::async_read(*_socket, boost::asio::buffer(_headerBuffer), [this, self](const boost::system::error_code& ec, std::size_t bytes) {
+            HandleReadHeader(ec, bytes);
         });
     }
 }
 
-void Network::Client::HandleRead(const boost::system::error_code& ec, std::size_t bytes)
+void Network::Client::HandleReadHeader(const boost::system::error_code& ec, std::size_t bytes)
 {
-    if (!ec && bytes > 0) {
-        std::vector<std::uint8_t> data(_readBuffer.begin(), _readBuffer.begin() + bytes);
+    if (!ec && bytes == HEADER_SIZE) {
+        std::memcpy(&_currentId, _headerBuffer.data(), 2);
+        std::memcpy(&_currentLength, _headerBuffer.data() + 2, 4);
 
-        if (data.size() >= 1) {
+        if (_currentLength > 0 && _currentLength <= MAX_MESSAGE_SIZE) {
+            _contentBuffer.resize(_currentLength);
+            StartReadContent();
+        } else if (!_currentLength) {
             Message message = {
-                .header = data[0],
-                .body = {}
+                .id = _currentId,
+                .content = {}
             };
-
-            if (data.size() > 1) {
-                message.body.assign(data.begin() + 1, data.end());
-            }
 
             if (_onData) {
                 _onData(_id, message);
             }
-        }
 
-        StartRead();
+            StartReadHeader();
+        } else {
+            Miscellaneous::Utils::Log(std::format("Client {} sent invalid content length: {}", _id, _currentLength), Miscellaneous::Utils::LogLevel::Warning);
+            if (_onDisconnect) {
+                _onDisconnect(_id);
+            }
+        }
     } else {
         if (ec != boost::asio::error::operation_aborted && ec != boost::asio::error::eof && ec != boost::asio::error::connection_reset) {
-            Miscellaneous::Utils::Log(std::format("Client {} read error: {}", _id, ec.message()), Miscellaneous::Utils::LogLevel::Warning);
+            Miscellaneous::Utils::Log(std::format("Client {} header read error: {}", _id, ec.message()), Miscellaneous::Utils::LogLevel::Warning);
+        }
+
+        if (_onDisconnect) {
+            _onDisconnect(_id);
+        }
+    }
+}
+
+void Network::Client::StartReadContent()
+{
+    if (IsConnected()) {
+        auto self = shared_from_this();
+
+        boost::asio::async_read(*_socket, boost::asio::buffer(_contentBuffer), [this, self](const boost::system::error_code& ec, std::size_t bytes) {
+            HandleReadContent(ec, bytes);
+        });
+    }
+}
+
+void Network::Client::HandleReadContent(const boost::system::error_code& ec, std::size_t bytes)
+{
+    if (!ec && bytes == _currentLength) {
+        Message message = {
+            .id = _currentId,
+            .content = _contentBuffer
+        };
+
+        if (_onData) {
+            _onData(_id, message);
+        }
+
+        StartReadHeader();
+    } else {
+        if (ec != boost::asio::error::operation_aborted && ec != boost::asio::error::eof && ec != boost::asio::error::connection_reset) {
+            Miscellaneous::Utils::Log(std::format("Client {} content read error: {}", _id, ec.message()), Miscellaneous::Utils::LogLevel::Warning);
         }
 
         if (_onDisconnect) {
@@ -92,12 +146,16 @@ void Network::Client::SendAsync(const Message& message)
             if (!queueFull && wasEmpty && !_writing) {
                 _writing = true;
 
-                std::vector<std::uint8_t> serializedData = {};
+                std::vector<std::uint8_t> serialized = {};
+                std::uint32_t length = static_cast<std::uint32_t>(message.content.size());
 
-                serializedData.push_back(message.header);
-                serializedData.insert(serializedData.end(), message.body.begin(), message.body.end());
+                serialized.resize(6 + message.content.size());
 
-                boost::asio::async_write(*_socket, boost::asio::buffer(serializedData), [this, self](const boost::system::error_code& ec, std::size_t bytes) {
+                std::memcpy(serialized.data(), &message.id, 2);
+                std::memcpy(serialized.data() + 2, &length, 4);
+                std::memcpy(serialized.data() + 6, message.content.data(), message.content.size());
+
+                boost::asio::async_write(*_socket, boost::asio::buffer(serialized), [this, self](const boost::system::error_code& ec, std::size_t bytes) {
                     HandleWrite(ec, bytes);
                 });
             }
@@ -125,12 +183,16 @@ void Network::Client::HandleWrite(const boost::system::error_code& ec, std::size
         if (hasNext) {
             auto self = shared_from_this();
 
-            std::vector<std::uint8_t> serializedData = {};
+            std::vector<std::uint8_t> serialized = {};
+            std::uint32_t length = static_cast<std::uint32_t>(nextMessage.content.size());
 
-            serializedData.push_back(nextMessage.header);
-            serializedData.insert(serializedData.end(), nextMessage.body.begin(), nextMessage.body.end());
+            serialized.resize(6 + nextMessage.content.size());
 
-            boost::asio::async_write(*_socket, boost::asio::buffer(serializedData), [this, self](const boost::system::error_code& ec, std::size_t bytes) {
+            std::memcpy(serialized.data(), &nextMessage.id, 2);
+            std::memcpy(serialized.data() + 2, &length, 4);
+            std::memcpy(serialized.data() + 6, nextMessage.content.data(), nextMessage.content.size());
+
+            boost::asio::async_write(*_socket, boost::asio::buffer(serialized), [this, self](const boost::system::error_code& ec, std::size_t bytes) {
                 HandleWrite(ec, bytes);
             });
         } else {

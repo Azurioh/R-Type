@@ -8,6 +8,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace Miscellaneous
 {
@@ -45,5 +46,13 @@ namespace Miscellaneous
              * @param level The level of the log message (default is informational)
              */
             static void Log(const std::string& message, const LogLevel level = Informational);
+
+            /**
+             * @brief Convert bytes to hex string representation
+             *
+             * @param data The bytes to convert
+             * @return Hex string representation of the data
+             */
+            static std::string BytesToHex(const std::vector<std::uint8_t>& data);
     };
 }
