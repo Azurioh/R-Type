@@ -1,4 +1,18 @@
-# R-Type
+<div align="center">
+    <img src="./docs/assets/r-type-banner.jpg" height=400>
+</div>
+
+<hr>
+
+<div align="center" style="line-height=1">
+
+[![GitHub](https://img.shields.io/badge/GitHub-%23121011.svg?logo=github&logoColor=white)](https://github.com/azurioh/R-Type)
+[![GitBook](https://img.shields.io/badge/GitBook-3884FF?logo=gitbook&logoColor=fff)](https://azuriohs-organization.gitbook.io/azurioh-r-type/)
+[![Mirror Epitech Project](https://github.com/Azurioh/R-Type/actions/workflows/epitech-mirroring.yml/badge.svg)](https://github.com/Azurioh/R-Type/actions/workflows/epitech-mirroring.yml)
+
+</div>
+
+# Introduction
 
 The goal of this project is to recreate network version of the classic arcade game R-Type using C++.
 
