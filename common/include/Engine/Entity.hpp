@@ -25,6 +25,20 @@ namespace Engine {
              */
             Entity(std::string name);
 
+            /**
+             * @brief Get the id of the entity.
+             *
+             * @return The id of the entity.
+             */
+            std::size_t GetId() const;
+
+            /**
+             * @brief Get the name of the entity.
+             *
+             * @return The name of the entity.
+             */
+            std::string GetName() const;
+
         private:
             std::size_t _id; /*!> The id of the entity. */
             std::string _name; /*!> The name of the entity. */

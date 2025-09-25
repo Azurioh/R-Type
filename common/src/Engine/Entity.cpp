@@ -13,3 +13,13 @@ Engine::Entity::Entity(std::string name): _name(name)
 
     _id = id++;
 }
+
+std::size_t Engine::Entity::GetId() const
+{
+    return _id;
+}
+
+std::string Engine::Entity::GetName() const
+{
+    return _name;
+}

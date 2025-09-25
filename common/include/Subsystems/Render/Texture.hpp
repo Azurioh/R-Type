@@ -8,6 +8,7 @@
 #pragma once
 
 #include <string>
+#include <any>
 
 namespace Subsystems::Render {
     /**
@@ -25,11 +26,6 @@ namespace Subsystems::Render {
             Texture(std::string imagePath);
 
             /**
-             * @brief Destroys the texture.
-             */
-            ~Texture();
-
-            /**
              * @brief Gets the image path.
              *
              * @return The image path.
@@ -41,7 +37,7 @@ namespace Subsystems::Render {
              *
              * @return The texture.
              */
-            void *GetTexture() const;
+            std::any& GetTexture();
 
             /**
              * @brief Sets the image path.
@@ -55,15 +51,10 @@ namespace Subsystems::Render {
              *
              * @param texture The texture.
              */
-            void SetTexture(void *texture);
-
-            /**
-             * @brief Deletes the texture.
-             */
-            void DeleteTexture();
+            void SetTexture(std::any& texture);
 
         private:
             std::string _imagePath; /*!> The image path. */
-            void *_texture; /*!> The texture. */
+            std::any _texture; /*!> The texture. */
     };
 }

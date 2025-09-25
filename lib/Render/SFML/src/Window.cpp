@@ -5,23 +5,20 @@
  * Window.cpp
  */
 
-#include <SFML/Graphics.hpp>
 #include "Subsystems/Render/Window.hpp"
+#include <SFML/Graphics.hpp>
+#include <iostream>
+#include <memory>
 
 Subsystems::Render::Window::Window(std::string windowName, unsigned int width, unsigned int height)
     : _windowName(windowName), _width(width), _height(height)
 {
-    _window = new sf::RenderWindow(sf::VideoMode({width, height}), windowName);
+    _window = std::make_shared<sf::RenderWindow>(sf::VideoMode({width, height}), windowName);
 }
 
 Subsystems::Render::Window::~Window()
 {
-    sf::RenderWindow *window = static_cast<sf::RenderWindow *>(_window);
-
     CloseWindow();
-    if (window) {
-        delete window;
-    }
 }
 
 unsigned int Subsystems::Render::Window::GetWidth() const
@@ -39,14 +36,14 @@ std::string Subsystems::Render::Window::GetWindowName() const
     return _windowName;
 }
 
-void *Subsystems::Render::Window::GetWindow() const
+std::any& Subsystems::Render::Window::GetWindow()
 {
     return _window;
 }
 
 bool Subsystems::Render::Window::IsOpen() const
 {
-    return static_cast<sf::RenderWindow *>(_window)->isOpen();
+    return std::any_cast<std::shared_ptr<sf::RenderWindow>>(_window)->isOpen();
 }
 
 void Subsystems::Render::Window::SetWidth(unsigned int width)
@@ -64,14 +61,14 @@ void Subsystems::Render::Window::SetWindowName(std::string windowName)
     _windowName = windowName;
 }
 
-void Subsystems::Render::Window::SetWindow(void *window)
+void Subsystems::Render::Window::SetWindow(std::any& window)
 {
     _window = window;
 }
 
 void Subsystems::Render::Window::HandleEvents()
 {
-    sf::RenderWindow *window = static_cast<sf::RenderWindow *>(_window);
+    std::shared_ptr<sf::RenderWindow> window = std::any_cast<std::shared_ptr<sf::RenderWindow>>(_window);
 
     while (const std::optional event = window->pollEvent()) {
         if (event->is<sf::Event::Closed>()) {
@@ -82,67 +79,58 @@ void Subsystems::Render::Window::HandleEvents()
 
 void Subsystems::Render::Window::ClearWindow(Color color)
 {
-    sf::RenderWindow *window = static_cast<sf::RenderWindow *>(_window);
-    sf::Color sfColor = *static_cast<sf::Color *>(GetColor(color));
+    std::shared_ptr<sf::RenderWindow> window = std::any_cast<std::shared_ptr<sf::RenderWindow>>(_window);
+    sf::Color sfColor = std::any_cast<sf::Color>(GetColor(color));
 
     window->clear(sfColor);
 }
 
 void Subsystems::Render::Window::CloseWindow()
 {
-    sf::RenderWindow *window = static_cast<sf::RenderWindow *>(_window);
+    std::shared_ptr<sf::RenderWindow> window = std::any_cast<std::shared_ptr<sf::RenderWindow>>(_window);
     if (window->isOpen()) {
         window->close();
     }
 }
 
-void Subsystems::Render::Window::Draw(const Sprite& sprite)
+void Subsystems::Render::Window::Draw(Sprite& sprite)
 {
-    sf::RenderWindow *window = static_cast<sf::RenderWindow *>(_window);
-    sf::Sprite sfSprite = *static_cast<sf::Sprite *>(sprite.GetSprite());
+    std::shared_ptr<sf::RenderWindow> window = std::any_cast<std::shared_ptr<sf::RenderWindow>>(_window);
+    std::shared_ptr<sf::Sprite> sfSprite = std::any_cast<std::shared_ptr<sf::Sprite>>(sprite.GetSprite());
 
-    window->draw(sfSprite);
+    window->draw(*sfSprite);
 }
 
-void Subsystems::Render::Window::Draw(const Text& text)
+void Subsystems::Render::Window::Draw(Text& text)
 {
-    sf::RenderWindow *window = static_cast<sf::RenderWindow *>(_window);
-    sf::Text sfText = *static_cast<sf::Text *>(text.GetText());
+    std::shared_ptr<sf::RenderWindow> window = std::any_cast<std::shared_ptr<sf::RenderWindow>>(_window);
+    std::shared_ptr<sf::Text> sfText = std::any_cast<std::shared_ptr<sf::Text>>(text.GetText());
 
-    window->draw(sfText);
-}
-
-void Subsystems::Render::Window::RefreshWindow()
-{
-    sf::RenderWindow *window = static_cast<sf::RenderWindow *>(_window);
-
-    window->close();
-
-    window->create(sf::WindowHandle());
+    window->draw(*sfText);
 }
 
 void Subsystems::Render::Window::DisplayWindow()
 {
-    sf::RenderWindow *window = static_cast<sf::RenderWindow *>(_window);
+    std::shared_ptr<sf::RenderWindow> window = std::any_cast<std::shared_ptr<sf::RenderWindow>>(_window);
     window->display();
 }
 
-void *Subsystems::Render::Window::GetColor(Color color) const
+std::any Subsystems::Render::Window::GetColor(Color color)
 {
     switch (color) {
         case Color::WHITE_COLOR:
-            return static_cast<void *>(new sf::Color(sf::Color::White));
+            return sf::Color(sf::Color::White);
         case Color::RED_COLOR:
-            return static_cast<void *>(new sf::Color(sf::Color::Red));
+            return sf::Color(sf::Color::Red);
         case Color::GREEN_COLOR:
-            return static_cast<void *>(new sf::Color(sf::Color::Green));
+            return sf::Color(sf::Color::Green);
         case Color::BLUE_COLOR  :
-            return static_cast<void *>(new sf::Color(sf::Color::Blue));
+            return sf::Color(sf::Color::Blue);
         case Color::YELLOW_COLOR:
-            return static_cast<void *>(new sf::Color(sf::Color::Yellow));
+            return sf::Color(sf::Color::Yellow);
         case Color::MAGENTA_COLOR:
-            return static_cast<void *>(new sf::Color(sf::Color::Magenta));
+            return sf::Color(sf::Color::Magenta);
         default:
-            return static_cast<void *>(new sf::Color(sf::Color::Black));
+            return sf::Color(sf::Color::Black);
     }
 }

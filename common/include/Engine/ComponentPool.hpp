@@ -30,7 +30,7 @@ namespace Engine {
              * @param id The id of the component.
              * @param component The component to add.
              */
-            void Add(std::size_t id, ComponentType component) {
+            void Add(std::size_t id, ComponentType& component) {
                 _denseArray.push_back(component);
 
                 if (PAGINATION_IDX(id) >= _sparseArray.size()) {
