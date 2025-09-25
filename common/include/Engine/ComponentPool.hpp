@@ -30,16 +30,16 @@ namespace Engine {
              * @param id The id of the component.
              * @param component The component to add.
              */
-            void Add(std::size_t id, ComponentType component) {
+            void Add(std::size_t id, ComponentType& component) {
                 _denseArray.push_back(component);
 
-                if (PAGINATION_IDX(id) >= _sparseArray.size()) {
-                    _sparseArray.resize(PAGINATION_IDX(id) + 1);
+                if (RType::PAGINATION_IDX(id) >= _sparseArray.size()) {
+                    _sparseArray.resize(RType::PAGINATION_IDX(id) + 1);
                 }
-                if (_sparseArray[PAGINATION_IDX(id)].size() < PAGINATION_SIZE) {
-                    _sparseArray[PAGINATION_IDX(id)].resize(PAGINATION_SIZE, std::nullopt);
+                if (_sparseArray[RType::PAGINATION_IDX(id)].size() < RType::PAGINATION_SIZE) {
+                    _sparseArray[RType::PAGINATION_IDX(id)].resize(RType::PAGINATION_SIZE, std::nullopt);
                 }
-                _sparseArray[PAGINATION_IDX(id)][IDX_IN_PAGINATION(id)] = _denseArray.size() - 1;
+                _sparseArray[RType::PAGINATION_IDX(id)][RType::IDX_IN_PAGINATION(id)] = _denseArray.size() - 1;
             };
 
             /**
@@ -49,15 +49,15 @@ namespace Engine {
              * @return The component.
              */
             ComponentType *Get(std::size_t id) {
-                if (PAGINATION_IDX(id) >= _sparseArray.size()) {
+                if (RType::PAGINATION_IDX(id) >= _sparseArray.size()) {
                     return nullptr;
                 }
-                if (IDX_IN_PAGINATION(id) >= _sparseArray[PAGINATION_IDX(id)].size()) {
+                if (RType::IDX_IN_PAGINATION(id) >= _sparseArray[RType::PAGINATION_IDX(id)].size()) {
                     return nullptr;
                 }
 
                 std::optional<std::size_t> index =
-                    _sparseArray[PAGINATION_IDX(id)][IDX_IN_PAGINATION(id)];
+                    _sparseArray[RType::PAGINATION_IDX(id)][RType::IDX_IN_PAGINATION(id)];
                 if (!index.has_value()) {
                     return nullptr;
                 }
@@ -70,7 +70,7 @@ namespace Engine {
              * @param id The id of the component.
              */
             void Delete(std::size_t id) {
-                std::optional<std::size_t> index = _sparseArray[PAGINATION_IDX(id)][IDX_IN_PAGINATION(id)];
+                std::optional<std::size_t> index = _sparseArray[RType::PAGINATION_IDX(id)][RType::IDX_IN_PAGINATION(id)];
                 std::optional<std::pair<std::size_t, std::size_t>> backIndex = getIndexOfSparseArrayFromValue(_denseArray.size() - 1);
 
                 if (!index.has_value() || !backIndex.has_value()) {
@@ -79,7 +79,7 @@ namespace Engine {
 
                 std::swap(_denseArray[index.value()], _denseArray.back());
 
-                _sparseArray[PAGINATION_IDX(id)][IDX_IN_PAGINATION(id)] = std::nullopt;
+                _sparseArray[RType::PAGINATION_IDX(id)][RType::IDX_IN_PAGINATION(id)] = std::nullopt;
                 _sparseArray[backIndex.value().first][backIndex.value().second] = index;
 
                 _denseArray.pop_back();
