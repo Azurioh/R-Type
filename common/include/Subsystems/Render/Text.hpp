@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <any>
 #include <string>
 
 namespace Subsystems::Render {
@@ -27,11 +28,6 @@ namespace Subsystems::Render {
             Text(std::string textStr, std::string fontPath, unsigned int characterSize = 32);
 
             /**
-             * @brief Destroys the text.
-             */
-            ~Text();
-
-            /**
              * @brief Gets the text string.
              *
              * @return The text string.
@@ -50,14 +46,14 @@ namespace Subsystems::Render {
              *
              * @return The font.
              */
-            void *GetFont() const;
+            std::any& GetFont();
 
             /**
              * @brief Gets the text.
              *
              * @return The text.
              */
-            void *GetText() const;
+            std::any& GetText();
 
             /**
              * @brief Gets the character size.
@@ -85,14 +81,14 @@ namespace Subsystems::Render {
              *
              * @param font The font.
              */
-            void SetFont(void *font);
+            void SetFont(std::any& font);
 
             /**
              * @brief Sets the text.
              *
              * @param text The text.
              */
-            void SetText(void *text);
+            void SetText(std::any& text);
 
             /**
              * @brief Sets the character size.
@@ -109,8 +105,8 @@ namespace Subsystems::Render {
         private:
             std::string _textStr; /*!> The text string. */
             std::string _fontPath; /*!> The font path. */
-            void *_font; /*!> The font. */
-            void *_text; /*!> The text. */
+            std::any _font; /*!> The font. */
+            std::any _text; /*!> The text. */
             unsigned int _characterSize; /*!> The character size. */
     };
 }

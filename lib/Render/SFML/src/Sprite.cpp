@@ -8,43 +8,29 @@
 #include "Subsystems/Render/Sprite.hpp"
 #include "Subsystems/Render/Texture.hpp"
 #include <SFML/Graphics.hpp>
+#include <memory>
+#include <iostream>
 
-Subsystems::Render::Sprite::Sprite(Texture *texture)
+Subsystems::Render::Sprite::Sprite(Texture& texture)
 {
-    sf::Texture *sfTexture = static_cast<sf::Texture *>(texture->GetTexture());
+    std::shared_ptr<sf::Texture> sfTexture = std::any_cast<std::shared_ptr<sf::Texture>>(texture.GetTexture());
 
-    _sprite = new sf::Sprite(*sfTexture);
+    _sprite = std::make_shared<sf::Sprite>(*sfTexture);
 }
 
-Subsystems::Render::Sprite::~Sprite()
-{
-    DeleteSprite();
-}
-
-void *Subsystems::Render::Sprite::GetSprite() const
+std::any& Subsystems::Render::Sprite::GetSprite()
 {
     return _sprite;
 }
 
-void Subsystems::Render::Sprite::SetSprite(void *sprite)
+void Subsystems::Render::Sprite::SetSprite(std::any& sprite)
 {
-    DeleteSprite();
     _sprite = sprite;
 }
 
-void Subsystems::Render::Sprite::SetTexture(Texture *texture)
+void Subsystems::Render::Sprite::SetTexture(Texture& texture)
 {
-    sf::Texture *sfTexture = static_cast<sf::Texture *>(texture->GetTexture());
+    auto sfTexture = std::any_cast<std::shared_ptr<sf::Texture>>(texture.GetTexture());
 
-    DeleteSprite();
-    _sprite = new sf::Sprite(*sfTexture);
-}
-
-void Subsystems::Render::Sprite::DeleteSprite()
-{
-    if (_sprite) {
-        sf::Sprite *sfSprite = static_cast<sf::Sprite *>(_sprite);
-        delete sfSprite;
-        _sprite = nullptr;
-    }
+    _sprite = std::make_shared<sf::Sprite>(*sfTexture);
 }

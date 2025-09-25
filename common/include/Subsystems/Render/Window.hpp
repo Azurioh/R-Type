@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <any>
 #include <string>
 #include "Subsystems/Render/Sprite.hpp"
 #include "Subsystems/Render/Text.hpp"
@@ -74,7 +75,7 @@ namespace Subsystems::Render {
              *
              * @return The window.
              */
-            void *GetWindow() const;
+            std::any& GetWindow();
 
             /**
              * @brief Checks if the window is open.
@@ -109,7 +110,7 @@ namespace Subsystems::Render {
              *
              * @param window The window.
              */
-            void SetWindow(void *window);
+            void SetWindow(std::any& window);
 
             /**
              * @brief Handles the events of the window.
@@ -129,12 +130,12 @@ namespace Subsystems::Render {
             /**
              * @brief Draws the sprite.
              */
-            void Draw(const Sprite& sprite);
+            void Draw(Sprite& sprite);
 
             /**
              * @brief Draws the text.
              */
-            void Draw(const Text& text);
+            void Draw(Text& text);
 
             /**
              * @brief Displays the window.
@@ -143,21 +144,16 @@ namespace Subsystems::Render {
 
         private:
             /**
-             * @brief Refreshes the window.
-             */
-            void RefreshWindow(void);
-
-            /**
              * @brief Gets the color.
              *
              * @param color The color.
              * @return The color.
              */
-            void *GetColor(Color color) const;
+            std::any GetColor(Color color);
 
             unsigned int _width; /*!> The width of the window. */
             unsigned int _height; /*!> The height of the window. */
             std::string _windowName; /*!> The name of the window. */
-            void *_window; /*!> The window. */
+            std::any _window; /*!> The window. */
     };
 }

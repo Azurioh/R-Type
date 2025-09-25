@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <any>
 #include <string>
 #include "Subsystems/Render/Texture.hpp"
 
@@ -23,56 +24,30 @@ namespace Subsystems::Render {
              *
              * @param texture The texture of the sprite.
              */
-            Sprite(Texture *texture);
-
-            /**
-             * @brief Destroys the sprite.
-             */
-            ~Sprite();
-
-            /**
-             * @brief Gets the texture of the sprite.
-             *
-             * @return The texture of the sprite.
-             */
-            Texture *GetTexture() const;
+            Sprite(Texture& texture);
 
             /**
              * @brief Gets the sprite.
              *
              * @return The sprite.
              */
-            void *GetSprite() const;
+            std::any& GetSprite();
 
             /**
              * @brief Sets the texture of the sprite.
              *
              * @param texture The texture of the sprite.
              */
-            void SetTexture(Texture *texture);
+            void SetTexture(Texture& texture);
 
             /**
              * @brief Sets the sprite of the sprite.
              *
              * @param sprite The sprite of the sprite.
              */
-            void SetSprite(void *sprite);
-
-            /**
-             * @brief Sets the color of the sprite.
-             *
-             * @param color The color of the sprite.
-             */
-            void SetColor(void *color);
-
-            /**
-             * @brief Deletes the sprite.
-             */
-            void DeleteSprite();
+            void SetSprite(std::any& sprite);
 
         private:
-            Texture *_texture; /*!> The texture of the sprite. */
-            void *_sprite; /*!> The sprite. */
-            void *_color; /*!> The color of the sprite. */
+            std::any _sprite; /*!> The sprite. */
     };
 }

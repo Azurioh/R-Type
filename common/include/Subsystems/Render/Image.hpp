@@ -8,6 +8,7 @@
 #pragma once
 
 #include "Subsystems/Render/Texture.hpp"
+#include <any>
 #include <string>
 
 namespace Subsystems::Render {
@@ -24,14 +25,13 @@ namespace Subsystems::Render {
              * @param imagePath The path of the image.
              */
             Image(std::string imagePath);
-            ~Image();
 
             /**
              * @brief Gets the image.
              *
              * @return The image.
              */
-            void *GetImage() const;
+            std::any& GetImage();
 
             /**
              * @brief Sets the image path.
@@ -45,14 +45,9 @@ namespace Subsystems::Render {
              *
              * @param image The image.
              */
-            void SetImage(void *image);
-
-            /**
-             * @brief Deletes the image.
-             */
-            void DeleteImage();
+            void SetImage(std::any& image);
 
         private:
-            void *_image; /*!> The image. */
+            std::any _image; /*!> The image. */
     };
 }

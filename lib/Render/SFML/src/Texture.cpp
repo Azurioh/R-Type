@@ -11,12 +11,7 @@
 
 Subsystems::Render::Texture::Texture(std::string imagePath)
 {
-    _texture = new sf::Texture(imagePath);
-}
-
-Subsystems::Render::Texture::~Texture()
-{
-    DeleteTexture();
+    _texture = std::make_shared<sf::Texture>(imagePath);
 }
 
 std::string Subsystems::Render::Texture::GetImagePath() const
@@ -24,28 +19,17 @@ std::string Subsystems::Render::Texture::GetImagePath() const
     return _imagePath;
 }
 
-void *Subsystems::Render::Texture::GetTexture() const
+std::any& Subsystems::Render::Texture::GetTexture()
 {
     return _texture;
 }
 
 void Subsystems::Render::Texture::SetTexture(std::string imagePath)
 {
-    DeleteTexture();
-    _texture = new sf::Texture(imagePath);
+    _texture = std::make_shared<sf::Texture>(imagePath);
 }
 
-void Subsystems::Render::Texture::SetTexture(void *texture)
+void Subsystems::Render::Texture::SetTexture(std::any& texture)
 {
-    DeleteTexture();
     _texture = texture;
-}
-
-void Subsystems::Render::Texture::DeleteTexture()
-{
-    if (_texture) {
-        sf::Texture *sfTexture = static_cast<sf::Texture *>(_texture);
-        delete sfTexture;
-        _texture = nullptr;
-    }
 }
