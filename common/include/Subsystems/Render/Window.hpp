@@ -9,8 +9,12 @@
 
 #include <any>
 #include <string>
+#include <vector>
 #include "Subsystems/Render/Sprite.hpp"
 #include "Subsystems/Render/Text.hpp"
+#include "Subsystems/HMI/Input.hpp"
+
+using inputTuple = std::tuple<Subsystems::HMI::Input::Type, std::size_t, Subsystems::HMI::Input::Action>;
 
 namespace Subsystems::Render {
     /**
@@ -115,7 +119,7 @@ namespace Subsystems::Render {
             /**
              * @brief Handles the events of the window.
              */
-            void HandleEvents(void);
+            std::vector<inputTuple> HandleEvents(void);
 
             /**
              * @brief Clears the window.
