@@ -92,10 +92,9 @@ namespace Network
             /**
              * @brief Handle completed header read operation.
              *
-             * @param error The error code from the read operation.
              * @param bytes Number of bytes read.
              */
-            void HandleReadHeader(const boost::system::error_code& error, std::size_t bytes);
+            void HandleReadHeader(std::size_t bytes);
 
             /**
              * @brief Start asynchronous read operation for the message content.
@@ -105,18 +104,16 @@ namespace Network
             /**
              * @brief Handle completed content read operation.
              *
-             * @param error The error code from the read operation.
              * @param bytes Number of bytes read.
              */
-            void HandleReadContent(const boost::system::error_code& error, std::size_t bytes);
+            void HandleReadContent(std::size_t bytes);
 
             /**
              * @brief Handle completed write operation.
              *
-             * @param error The error code from the write operation.
              * @param bytes Number of bytes written.
              */
-            void HandleWrite(const boost::system::error_code& error, std::size_t bytes);
+            void HandleWrite(std::size_t bytes);
 
             std::shared_ptr<boost::asio::ip::tcp::socket> _socket; /*!< The socket associated with the client */
             boost::asio::ip::udp::endpoint _endpoint; /*!< The endpoint associated with the client */

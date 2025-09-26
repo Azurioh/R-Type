@@ -117,13 +117,19 @@ void Network::Transceiver::StartAccept()
     auto socket = std::make_shared<boost::asio::ip::tcp::socket>(_context);
 
     _acceptor.async_accept(*socket, [this, socket](const boost::system::error_code& ec) {
-        HandleAccept(socket, ec);
+        if (ec) {
+            if (ec != boost::asio::error::operation_aborted) {
+                Misc::Utils::Log(std::format("Accept error: {}", ec.message()), Misc::Utils::LogLevel::Error);
+            }
+        } else {
+            HandleAccept(socket);
+        }
     });
 }
 
-void Network::Transceiver::HandleAccept(std::shared_ptr<boost::asio::ip::tcp::socket> socket, const boost::system::error_code& ec)
+void Network::Transceiver::HandleAccept(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
 {
-    if (!ec && _isRunning.load()) {
+    if (_isRunning.load()) {
         try {
             std::uint32_t id = GenerateClientId();
             auto client = std::make_shared<Client>(id, socket);
@@ -141,13 +147,7 @@ void Network::Transceiver::HandleAccept(std::shared_ptr<boost::asio::ip::tcp::so
         } catch (const std::exception& ex) {
             Misc::Utils::Log(std::format("Error handling new connection: {}", ex.what()), Misc::Utils::LogLevel::Error);
         }
-    } else if (ec) {
-        if (ec != boost::asio::error::operation_aborted) {
-            Misc::Utils::Log(std::format("Accept error: {}", ec.message()), Misc::Utils::LogLevel::Error);
-        }
-    }
 
-    if (_isRunning.load()) {
         StartAccept();
     }
 }
@@ -165,8 +165,8 @@ void Network::Transceiver::HandleClientDisconnect(std::uint32_t id)
 
 void Network::Transceiver::HandleClientData(std::uint32_t id, const std::vector<std::uint8_t>& raw)
 {
-    if (raw.size() >= 6) {
-        Misc::Utils::Log(std::format("Received raw message from client {}: {}", id, Misc::Utils::BytesToHex(raw)), Misc::Utils::LogLevel::Informational);
+    if (raw.size() >= HEADER_SIZE) {
+        Misc::Utils::Log(std::format("Received message from client {}: {}", id, Misc::Utils::BytesToHex(raw)), Misc::Utils::LogLevel::Informational);
 
         std::lock_guard<std::mutex> lock(_clientsMutex);
         auto it = _clients.find(id);

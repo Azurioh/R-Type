@@ -92,9 +92,8 @@ namespace Network
              * @brief Handle a new client connection.
              *
              * @param socket The socket for the new connection.
-             * @param ec The error code from the accept operation.
              */
-            void HandleAccept(std::shared_ptr<boost::asio::ip::tcp::socket> socket, const boost::system::error_code& ec);
+            void HandleAccept(std::shared_ptr<boost::asio::ip::tcp::socket> socket);
 
             /**
              * @brief Handle client disconnection.
