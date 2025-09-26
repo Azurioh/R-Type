@@ -61,6 +61,10 @@ namespace Subsystems::HMI {
                 GamepadRSUp, GamepadRSDown, GamepadRSLeft, GamepadRSRight,
             };
 
+            /**
+             * @enum Action
+             * @brief The action of the input.
+             */
             enum Action {
                 Pressed,
                 Released,
@@ -148,6 +152,13 @@ namespace Subsystems::HMI {
              */
             bool operator<(const Input& other) const;
 
+            /**
+             * @brief Outputs the input to an ostream.
+             *
+             * @param os The ostream.
+             * @param input The input.
+             * @return The ostream.
+             */
             friend std::ostream& operator<<(std::ostream& os, const Input& input);
 
         private:
