@@ -6,9 +6,11 @@
  */
 
 #include "Subsystems/Render/Window.hpp"
+#include "SFMLAdapter.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <memory>
+#include <tuple>
 
 Subsystems::Render::Window::Window(std::string windowName, unsigned int width, unsigned int height)
     : _windowName(windowName), _width(width), _height(height)
@@ -66,15 +68,25 @@ void Subsystems::Render::Window::SetWindow(std::any& window)
     _window = window;
 }
 
-void Subsystems::Render::Window::HandleEvents()
+std::vector<inputTuple> Subsystems::Render::Window::HandleEvents()
 {
     std::shared_ptr<sf::RenderWindow> window = std::any_cast<std::shared_ptr<sf::RenderWindow>>(_window);
+    SFMLAdapter adapter;
+    std::vector<inputTuple> inputs;
 
     while (const std::optional event = window->pollEvent()) {
         if (event->is<sf::Event::Closed>()) {
             window->close();
         }
+        adapter.AdaptInput(event.value());
+        inputTuple inputData = std::make_tuple(adapter.GetType(), adapter.GetKey(), adapter.GetAction());
+        if (std::get<0>(inputData) != HMI::Input::Type::UnknownType
+            && std::get<1>(inputData) != HMI::Input::KeyCode::UnknownKey
+            && std::get<2>(inputData) != HMI::Input::Action::UnknownAction) {
+            inputs.push_back(inputData);
+        }
     }
+    return inputs;
 }
 
 void Subsystems::Render::Window::ClearWindow(Color color)

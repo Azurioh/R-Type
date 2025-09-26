@@ -8,6 +8,7 @@
 #pragma once
 
 #include <cstddef>
+#include <iostream>
 
 namespace Subsystems::HMI {
     /**
@@ -21,6 +22,7 @@ namespace Subsystems::HMI {
              * @brief The type of input.
              */
             enum Type {
+                UnknownType = 0,
                 KeyboardMouse = 1,
                 Gamepad,
             };
@@ -30,7 +32,7 @@ namespace Subsystems::HMI {
              * @brief The key code.
              */
             enum KeyCode {
-                Unknown,
+                UnknownKey = 0,
                 A, B, C, D, E, F, G, H, I, J, K, L, M,
                 N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
                 Num0, Num1, Num2, Num3, Num4, Num5, Num6, Num7, Num8, Num9,
@@ -49,6 +51,7 @@ namespace Subsystems::HMI {
              * @brief The gamepad code.
              */
             enum GamepadCode {
+                GamepadUnknown = 0,
                 GamepadButtonA = 1, GamepadButtonB, GamepadButtonX, GamepadButtonY,
                 GamepadButtonLB, GamepadButtonRB, GamepadButtonLT, GamepadButtonRT,
                 GamepadButtonLS, GamepadButtonRS, GamepadButtonStart, GamepadButtonSelect,
@@ -59,12 +62,22 @@ namespace Subsystems::HMI {
             };
 
             /**
+             * @enum Action
+             * @brief The action of the input.
+             */
+            enum Action {
+                Pressed,
+                Released,
+                UnknownAction,
+            };
+
+            /**
              * @brief Constructs an input with the specified type and key.
              *
              * @param type The type of input.
              * @param key The key code.
              */
-            Input(Type type, KeyCode key);
+            Input(Type type, KeyCode key, Action action);
 
             /**
              * @brief Constructs an input with the specified type and gamepad.
@@ -72,7 +85,7 @@ namespace Subsystems::HMI {
              * @param type The type of input.
              * @param gamepad The gamepad code.
              */
-            Input(Type type, GamepadCode gamepad);
+            Input(Type type, GamepadCode gamepad, Action action);
 
             /**
              * @brief Gets the type of input.
@@ -89,6 +102,13 @@ namespace Subsystems::HMI {
             std::size_t GetKey() const;
 
             /**
+             * @brief Gets the action.
+             *
+             * @return The action.
+             */
+            Action GetAction() const;
+
+            /**
              * @brief Sets the type of input.
              *
              * @param type The type of input.
@@ -101,6 +121,20 @@ namespace Subsystems::HMI {
              * @param key The key code.
              */
             void SetKey(KeyCode key);
+
+            /**
+             * @brief Sets the gamepad code.
+             *
+             * @param gamepad The gamepad code.
+             */
+            void SetKey(GamepadCode gamepad);
+
+            /**
+             * @brief Sets the action.
+             *
+             * @param action The action.
+             */
+            void SetAction(Action action);
 
             /**
              * @brief Checks if the input is equal to the other input.
@@ -118,8 +152,18 @@ namespace Subsystems::HMI {
              */
             bool operator<(const Input& other) const;
 
+            /**
+             * @brief Outputs the input to an ostream.
+             *
+             * @param os The ostream.
+             * @param input The input.
+             * @return The ostream.
+             */
+            friend std::ostream& operator<<(std::ostream& os, const Input& input);
+
         private:
             Type _type; /*!> The type of input. */
             std::size_t _key; /*!> The key code. */
+            Action _action; /*!> The action of the input. */
     };
 }
