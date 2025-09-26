@@ -6,7 +6,8 @@
 */
 
 #include "Exception/EmptyQueueError.hpp"
-#include <iostream>
+
+#include <format>
 
 Exception::EmptyQueueError::EmptyQueueError(const std::string& name, const std::source_location &where) : Generic(FormatError(name), where) {}
 

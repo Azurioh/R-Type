@@ -7,9 +7,11 @@
 
 #pragma once
 
+#include <cstdint>
 #include <string>
+#include <vector>
 
-namespace Miscellaneous
+namespace Misc
 {
     /**
      * @class Utils
@@ -24,6 +26,7 @@ namespace Miscellaneous
              */
             enum LogLevel {
                 Informational, /*!> Informational log level */
+                Warning, /*!> Warning log level */
                 Error /*!> Error log level */
             };
 
@@ -44,5 +47,13 @@ namespace Miscellaneous
              * @param level The level of the log message (default is informational)
              */
             static void Log(const std::string& message, const LogLevel level = Informational);
+
+            /**
+             * @brief Convert bytes to hex string representation
+             *
+             * @param data The bytes to convert
+             * @return Hex string representation of the data
+             */
+            static std::string BytesToHex(const std::vector<std::uint8_t>& data);
     };
 }

@@ -7,7 +7,7 @@
 
 #pragma once
 
-namespace Miscellaneous
+namespace Misc
 {
     /**
      * @class Singleton
