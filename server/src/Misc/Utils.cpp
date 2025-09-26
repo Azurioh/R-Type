@@ -8,9 +8,12 @@
 #include "Exception/Generic.hpp"
 #include "Misc/Utils.hpp"
 
+#include <algorithm>
 #include <iostream>
 #include <iomanip>
+#include <cstdint>
 #include <sstream>
+#include <chrono>
 #include <format>
 
 const std::string Misc::Utils::GetTextOption(char **begin, char **end, const std::string& name)

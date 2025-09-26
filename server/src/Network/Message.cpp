@@ -8,6 +8,8 @@
 #include "Exception/Generic.hpp"
 #include "Network/Message.hpp"
 
+#include <cstring>
+
 Network::Message::Message(const std::uint16_t id, const std::vector<std::uint8_t>& content) : _id(id), _content(content) {}
 
 Network::Message::Message(const std::vector<std::uint8_t>& raw)
