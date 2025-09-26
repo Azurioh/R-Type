@@ -7,13 +7,13 @@
 
 #include "Subsystems/HMI/Input.hpp"
 
-Subsystems::HMI::Input::Input(Type type, KeyCode key)
-    : _type(type), _key(key)
+Subsystems::HMI::Input::Input(Type type, KeyCode key, Action action)
+    : _type(type), _key(key), _action(action)
 {
 }
 
-Subsystems::HMI::Input::Input(Type type, GamepadCode gamepad)
-    : _type(type), _key(gamepad)
+Subsystems::HMI::Input::Input(Type type, GamepadCode gamepad, Action action)
+    : _type(type), _key(gamepad), _action(action)
 {
 }
 
@@ -27,6 +27,11 @@ std::size_t Subsystems::HMI::Input::GetKey() const
     return _key;
 }
 
+Subsystems::HMI::Input::Action Subsystems::HMI::Input::GetAction() const
+{
+    return _action;
+}
+
 void Subsystems::HMI::Input::SetType(Type type)
 {
     _type = type;
@@ -35,6 +40,16 @@ void Subsystems::HMI::Input::SetType(Type type)
 void Subsystems::HMI::Input::SetKey(KeyCode key)
 {
     _key = key;
+}
+
+void Subsystems::HMI::Input::SetKey(GamepadCode gamepad)
+{
+    _key = gamepad;
+}
+
+void Subsystems::HMI::Input::SetAction(Action action)
+{
+    _action = action;
 }
 
 bool Subsystems::HMI::Input::operator==(const Input& other) const
@@ -48,4 +63,12 @@ bool Subsystems::HMI::Input::operator<(const Input& other) const
         return _type < other._type;
     }
     return _key < other._key;
+}
+
+std::ostream& operator<<(std::ostream& os, const Subsystems::HMI::Input& input)
+{
+    os << "Type: " << static_cast<int>(input.GetType())
+       << ", Key: " << input.GetKey()
+       << ", Action: " << static_cast<int>(input.GetAction());
+    return os;
 }
